@@ -8,7 +8,7 @@ export function DeficiencyPanel({ deficiencies }: Props) {
   if (deficiencies.length === 0) return null;
 
   return (
-    <div className="rounded-lg border border-rose-300 bg-rose-50 p-4">
+    <div className="rounded-xl border border-rose-300 bg-rose-50 p-4">
       <h3 className="font-semibold text-rose-700">Không tìm được đội hình hợp lệ nào (vô nghiệm)</h3>
       <ul className="mt-2 space-y-1 text-sm text-slate-700 list-disc pl-5">
         {deficiencies.map((d, i) => (

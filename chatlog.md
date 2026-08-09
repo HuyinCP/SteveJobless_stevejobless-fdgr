@@ -407,6 +407,56 @@ Triển khai:
   cả pass. Kiểm tra `git add -n -A` để xác nhận không có `.env` thật hay `node_modules` nào bị lọt
   vào staging, chỉ các `.env.example` và mã nguồn thật được thêm mới.
 
+## Lượt 37 — User
+
+> "bây giờ chúng ta chuyển sang phần giao diện được không, cho nó đẹp hơn tôi có template bên
+> C:\Users\Huy\Downloads\startbootstrap-landing-page-gh-pages\... lưu ý chỉ là Vẫn đưa cho AI làm
+> nhưng lấy template làm reference (tôi kị màu tím đừng dùng màu tím nhiều chuyển sang các màu khác)
+> và dev thêm phần option người dùng muốn thêm profile mới á, ý là có một bạn mới vào họ muốn add
+> thông tin họ vào"
+
+## Lượt 38 — Claude
+
+Đọc template Start Bootstrap "Landing Page" (`index.html`, `css/styles.css`) — ghi nhận: màu chủ đạo
+`#0d6efd` (xanh dương, Bootstrap primary), font `Lato`, bố cục hero full-width + feature-icon grid +
+showcase sections + CTA. Không copy nguyên landing page (app này là dashboard công cụ, không phải
+trang giới thiệu), chỉ lấy cảm hứng màu/typography/bố cục.
+
+Thực hiện 2 phần:
+
+**A. Redesign UI (bỏ hoàn toàn màu tím/indigo):**
+- Thêm Google Font **Inter** (`index.html` + `index.css`) thay font hệ thống mặc định — chọn Inter
+  thay vì Lato của template vì hợp hơn với UI dạng dashboard nhiều dữ liệu.
+- `App.tsx`: viết lại header thành hero full-width gradient `blue-700 → blue-600 → cyan-500`, chữ
+  trắng; tab điều hướng đổi thành pill button bo tròn; mỗi bước core-flow bọc trong component `Card`
+  mới (`rounded-2xl`, `ring-1 ring-slate-200`, `shadow-sm`) thay cho `<section>` trần.
+- Đổi toàn bộ `indigo-*` (màu tím) sang `blue-*` ở `CandidateCard.tsx`, `SuggestionCard.tsx`,
+  `StudentPortal.tsx` (badge điểm toán, viền/ring khi chọn, link "xem chi tiết", nút đăng nhập).
+  `grep -r indigo src` xác nhận không còn kết quả.
+- `ConstraintsForm.tsx`: đổi badge luật ICPC sang pill xanh dương, thêm `accent-blue-600` cho input
+  range. `CandidatePool.tsx`: thêm focus ring xanh dương cho ô tìm kiếm. `DeficiencyPanel.tsx`: đồng
+  bộ `rounded-xl`.
+
+**B. Tính năng đăng ký hồ sơ mới (theo yêu cầu người dùng, thuộc Cổng sinh viên — không đụng luồng
+ghép đội chính, đúng quyết định tách rủi ro đã ghi ở Lượt 35):**
+- Backend: thêm `POST /api/candidates` (`source/backend/src/index.js`) — validate họ tên (≥2 từ,
+  chỉ chữ), MSSV (đúng 8 số), email phải khớp đúng `<mssv>@student.hcmus.edu.vn`, điểm toán/lập
+  trình (số nguyên 0-10), số lần Regional/WF (số nguyên ≥ 0); bắt lỗi Postgres `23505`
+  (unique_violation) trả về 409 "MSSV hoặc email này đã được đăng ký trước đó" thay vì lỗi 500 thô.
+  Test qua `curl`: 1 case hợp lệ, 1 case trùng MSSV, 1 case email không khớp MSSV — cả 3 đúng như kỳ
+  vọng; xoá dòng test khỏi DB sau khi xác nhận.
+- Frontend: `lib/api.ts` thêm `registerCandidate()`; component mới `RegisterProfile.tsx` — form họ
+  tên/MSSV (email tự sinh từ MSSV, hiển thị readonly để tránh sai định dạng)/điểm tự đánh giá toán và
+  lập trình (slider)/số lần Regional-WF/điểm mạnh-yếu; validate phía client trước khi gọi API, hiển
+  thị lỗi server trả về (409/400) rõ ràng, không crash. `StudentPortal.tsx` thêm nút "+ Đăng ký hồ sơ
+  mới" mở form này; đăng ký xong tự thêm vào danh sách hiện có và tự đăng nhập luôn bằng hồ sơ mới.
+
+Dọn tiến trình `node`/`vite` cũ còn treo (PowerShell `Get-CimInstance` + `Stop-Process`), khởi động
+lại backend (`npm run dev` dùng `node --watch`) và frontend sạch. Chạy lại `npx tsc -b --noEmit` và
+`npm run build` — pass. Cập nhật `README.md` (tính năng đăng ký, cấu trúc thư mục) và `CLAUDE.md`
+(mục mới "Thiết kế UI" ghi rõ bảng màu cấm tím/indigo/violet để tránh AI lỡ dùng lại ở lần sau, và
+ghi chú đăng ký hồ sơ mới không xuất hiện trong pool ghép đội chính).
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai

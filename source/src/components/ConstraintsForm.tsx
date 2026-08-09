@@ -9,18 +9,18 @@ interface Props {
 export function ConstraintsForm({ constraints, onChange }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="bg-white rounded-lg border border-slate-200 p-4 md:col-span-2">
+      <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 md:col-span-2">
         <p className="text-sm font-medium text-slate-700 mb-2">
           Ràng buộc theo luật ICPC Global (cố định — không thể chỉnh)
         </p>
         <div className="flex flex-wrap gap-2 text-xs">
-          <span className="px-2 py-1 rounded bg-slate-100 text-slate-700">
+          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
             Đúng {ICPC_TEAM_SIZE} thành viên/đội
           </span>
-          <span className="px-2 py-1 rounded bg-slate-100 text-slate-700">
+          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
             Tối đa {ICPC_MAX_REGIONAL_YEARS} năm thi Regional
           </span>
-          <span className="px-2 py-1 rounded bg-slate-100 text-slate-700">
+          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
             Tối đa {ICPC_MAX_WORLD_FINALS} lần thi World Finals
           </span>
         </div>
@@ -30,13 +30,13 @@ export function ConstraintsForm({ constraints, onChange }: Props) {
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-4 md:col-span-2">
+      <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 md:col-span-2">
         <label className="block text-sm font-medium text-slate-700 mb-1">Ngưỡng "mạnh" (0-10)</label>
         <input
           type="range"
           min={1}
           max={10}
-          className="w-full"
+          className="w-full accent-blue-600"
           value={constraints.strongThreshold}
           onChange={(e) => onChange({ ...constraints, strongThreshold: Number(e.target.value) })}
         />

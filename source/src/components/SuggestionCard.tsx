@@ -10,8 +10,8 @@ interface Props {
 export function SuggestionCard({ suggestion, rank, selected, onSelect }: Props) {
   return (
     <div
-      className={`rounded-lg border p-4 bg-white flex flex-col gap-3 ${
-        selected ? "border-indigo-500 ring-2 ring-indigo-200" : "border-slate-200"
+      className={`rounded-xl border p-4 bg-white flex flex-col gap-3 transition-shadow ${
+        selected ? "border-blue-500 ring-2 ring-blue-200 shadow-sm" : "border-slate-200"
       }`}
     >
       <div className="flex items-center justify-between">
@@ -23,8 +23,8 @@ export function SuggestionCard({ suggestion, rank, selected, onSelect }: Props) 
         </div>
         <button
           onClick={() => onSelect(suggestion.id)}
-          className={`text-xs px-3 py-1.5 rounded font-medium ${
-            selected ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+          className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${
+            selected ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
           }`}
         >
           {selected ? "Đã chọn" : "Chọn đội này"}
@@ -33,9 +33,9 @@ export function SuggestionCard({ suggestion, rank, selected, onSelect }: Props) 
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {suggestion.roleAssignments.map(({ candidate, role }) => (
-          <div key={candidate.id} className="rounded border border-slate-100 bg-slate-50 p-2">
+          <div key={candidate.id} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
             <p className="text-sm font-medium text-slate-900">{candidate.fullName}</p>
-            <p className="text-xs text-indigo-600">{role}</p>
+            <p className="text-xs text-blue-600">{role}</p>
             <p className="text-xs text-slate-500">
               Toán {candidate.mathScore} · Lập trình {candidate.codingScore}
             </p>
@@ -57,7 +57,7 @@ export function SuggestionCard({ suggestion, rank, selected, onSelect }: Props) 
       </div>
 
       <details className="text-sm text-slate-600">
-        <summary className="cursor-pointer text-indigo-600 font-medium">
+        <summary className="cursor-pointer text-blue-600 font-medium">
           Xem báo cáo giải thích chi tiết
         </summary>
         <ul className="mt-2 list-disc pl-5 space-y-1">

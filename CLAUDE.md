@@ -118,8 +118,24 @@ chỉnh trong UI** — khác với `strongThreshold` (ngưỡng "mạnh") là ti
   `source/backend/scripts/gen-seed.cjs` — `candidates.ts` là nguồn dữ liệu duy nhất. Nếu sửa
   `candidates.ts`, phải chạy lại script này rồi `docker compose down -v && docker compose up -d db`
   để re-seed (init.sql chỉ chạy khi tạo volume mới).
+- **Đăng ký hồ sơ mới** (`RegisterProfile.tsx` + `POST /api/candidates`): chỉ thuộc Cổng sinh viên,
+  KHÔNG xuất hiện trong pool ứng viên của luồng ghép đội chính (vẫn đọc `candidates.ts` tĩnh) — đây
+  là hệ quả trực tiếp của quyết định tách rủi ro ở trên, không phải thiếu sót. Validate cả hai phía:
+  họ tên ≥ 2 từ chỉ chứa chữ, MSSV đúng 8 số, email phải khớp `<mssv>@student.hcmus.edu.vn` (frontend
+  tự sinh email từ MSSV để tránh sai định dạng), trùng MSSV/email trả lỗi 409 rõ ràng.
 
-## 5. Quy ước code
+## 5. Thiết kế UI
+
+- **Bảng màu**: xanh dương (`blue-*`) làm màu chủ đạo, `emerald` cho trạng thái tốt/thành công,
+  `rose` cho lỗi/vô nghiệm, `slate` cho nền/văn bản phụ. **Tuyệt đối không dùng tím/indigo/violet**
+  (yêu cầu rõ của người dùng) — nếu thêm UI mới, kiểm tra lại không lỡ dùng `indigo`/`purple`/`violet`.
+- **Font**: Inter (Google Fonts, khai báo trong `index.html`), thay cho font hệ thống mặc định.
+- Tham khảo bố cục từ template Start Bootstrap "Landing Page" (`startbootstrap-landing-page`) —
+  hero section gradient full-width, card sections bo góc lớn (`rounded-2xl`) có `ring`/`shadow-sm`,
+  nút bo tròn (`rounded-full`) cho tab điều hướng — nhưng đây là ứng dụng công cụ (dashboard-like),
+  không copy nguyên landing page, chỉ lấy cảm hứng typography/spacing/màu.
+
+## 6. Quy ước code
 
 - TypeScript strict, không dùng `any` tùy tiện.
 - Không viết comment giải thích code làm gì — chỉ comment khi có lý do ẩn (invariant, workaround).

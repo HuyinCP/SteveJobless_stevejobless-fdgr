@@ -15,7 +15,7 @@ export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Pr
 
   return (
     <div
-      className={`rounded-lg border p-4 bg-white flex flex-col gap-2 ${
+      className={`rounded-xl border p-4 bg-white flex flex-col gap-2 transition-shadow hover:shadow-md ${
         candidate.active ? "border-slate-200" : "border-slate-200 opacity-50"
       }`}
     >
@@ -37,7 +37,7 @@ export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Pr
       <div className="flex gap-2 text-xs">
         <span
           className={`px-2 py-0.5 rounded-full ${
-            mathStrong ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-500"
+            mathStrong ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-500"
           }`}
         >
           Toán {candidate.mathScore}/10

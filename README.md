@@ -40,6 +40,9 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
   (PostgreSQL) — đăng nhập bằng cách chọn tên mình trong danh sách (dữ liệu mock, không cần mật
   khẩu), sau đó chỉ xem được hồ sơ của chính mình (read-only). Tách biệt hoàn toàn với luồng ghép
   đội chính ở trên để không ảnh hưởng tới phần đã được chấm theo core flow của đề.
+- **Đăng ký hồ sơ mới**: sinh viên chưa có trong hệ thống có thể tự tạo hồ sơ (họ tên, MSSV 8 số,
+  email tự sinh và đối chiếu khớp MSSV, tự đánh giá điểm toán/lập trình, điểm mạnh/yếu) — validate
+  cả ở frontend và backend, báo lỗi rõ ràng khi trùng MSSV/email, không crash.
 
 ## 3. Công nghệ và phụ thuộc
 
@@ -131,11 +134,11 @@ SteveJobless_stevejobless-fdgr/
     │   ├── hooks/useLocalStorage.ts
     │   └── components/           <- ConstraintsForm, CandidatePool, CandidateCard,
     │                                 SuggestionResults, SuggestionCard, DeficiencyPanel,
-    │                                 StudentPortal (Cổng sinh viên)
+    │                                 StudentPortal, RegisterProfile (Cổng sinh viên)
     └── backend/                  <- API cho Cổng sinh viên (Express + PostgreSQL)
         ├── package.json
         ├── .env.example
-        ├── src/index.js          <- REST API: /api/candidates, /health
+        ├── src/index.js          <- REST API: GET/POST /api/candidates, PATCH .../active, /health
         ├── src/db.js             <- kết nối Postgres (node-postgres)
         ├── db/init.sql           <- schema + seed 20 ứng viên (auto-run khi tạo container)
         └── scripts/gen-seed.cjs  <- sinh init.sql từ data/candidates.ts (1 nguồn dữ liệu duy nhất)
