@@ -12,6 +12,7 @@ export function StudentPortal() {
     localStorage.getItem(PORTAL_USER_KEY)
   );
   const [registering, setRegistering] = useState(false);
+  const [pendingId, setPendingId] = useState("");
 
   useEffect(() => {
     getCandidates()
@@ -57,29 +58,36 @@ export function StudentPortal() {
 
   if (!me) {
     return (
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm text-slate-600">
-            Chọn tên của bạn để đăng nhập (dữ liệu mock từ database, không cần mật khẩu):
-          </p>
+      <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <p className="text-sm text-slate-600 mb-3">
+          Chọn tên của bạn để đăng nhập (dữ liệu mock từ database, không cần mật khẩu):
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            value={pendingId}
+            onChange={(e) => setPendingId(e.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm flex-1 min-w-[220px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+          >
+            <option value="">— Chọn tên của bạn —</option>
+            {candidates.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.fullName} ({c.mssv})
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => pendingId && login(pendingId)}
+            disabled={!pendingId}
+            className="text-sm rounded-lg bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Đăng nhập
+          </button>
           <button
             onClick={() => setRegistering(true)}
-            className="text-sm rounded-lg bg-blue-600 text-white px-3 py-1.5 font-semibold hover:bg-blue-700 transition-colors shrink-0"
+            className="text-sm rounded-lg border border-slate-300 px-4 py-2 font-medium hover:bg-slate-50 transition-colors"
           >
             + Đăng ký hồ sơ mới
           </button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {candidates.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => login(c.id)}
-              className="text-left rounded-xl border border-slate-200 bg-white p-3 hover:border-blue-400 hover:bg-blue-50 transition-colors"
-            >
-              <p className="text-sm font-medium text-slate-900">{c.fullName}</p>
-              <p className="text-xs text-slate-500">{c.mssv}</p>
-            </button>
-          ))}
         </div>
       </div>
     );

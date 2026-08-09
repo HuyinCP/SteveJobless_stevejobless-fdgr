@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { Candidate } from "../types";
 import { CandidateCard } from "./CandidateCard";
 
@@ -9,46 +9,39 @@ interface Props {
 }
 
 export function CandidatePool({ candidates, strongThreshold, onToggleActive }: Props) {
-  const [query, setQuery] = useState("");
-
-  const filtered = useMemo(() => {
-    return candidates.filter(
-      (c) =>
-        query.trim() === "" ||
-        c.fullName.toLowerCase().includes(query.toLowerCase()) ||
-        c.mssv.includes(query)
-    );
-  }, [candidates, query]);
+  const [selectedId, setSelectedId] = useState("");
 
   const activeCount = candidates.filter((c) => c.active).length;
+  const selected = candidates.find((c) => c.id === selectedId) ?? null;
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3 mb-4">
-        <input
-          type="text"
-          placeholder="Tìm theo tên hoặc MSSV..."
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <span className="text-sm text-slate-500 self-center">
-          {activeCount}/{candidates.length} ứng viên đang sẵn sàng · hiển thị {filtered.length}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <select
+          value={selectedId}
+          onChange={(e) => setSelectedId(e.target.value)}
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm flex-1 min-w-[220px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+        >
+          <option value="">— Chọn một ứng viên để xem chi tiết —</option>
+          {candidates.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.fullName} ({c.mssv}){c.active ? "" : " · tạm ngừng"}
+            </option>
+          ))}
+        </select>
+        <span className="text-sm text-slate-500">
+          {activeCount}/{candidates.length} ứng viên đang sẵn sàng
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {filtered.map((c) => (
-          <CandidateCard
-            key={c.id}
-            candidate={c}
-            strongThreshold={strongThreshold}
-            onToggleActive={onToggleActive}
-          />
-        ))}
-      </div>
-      {filtered.length === 0 && (
-        <p className="text-sm text-slate-500 mt-4">Không có ứng viên khớp bộ lọc hiện tại.</p>
+      {selected ? (
+        <CandidateCard
+          candidate={selected}
+          strongThreshold={strongThreshold}
+          onToggleActive={onToggleActive}
+        />
+      ) : (
+        <p className="text-sm text-slate-500">Chọn một ứng viên trong danh sách trên để xem hồ sơ.</p>
       )}
     </div>
   );

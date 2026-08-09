@@ -24,10 +24,6 @@ export function ConstraintsForm({ constraints, onChange }: Props) {
             Tối đa {ICPC_MAX_WORLD_FINALS} lần thi World Finals
           </span>
         </div>
-        <p className="text-xs text-slate-500 mt-2">
-          Theo ICPC Regional Rules (mục "Team Composition" và "Limits on Participation") — luật thi
-          đấu toàn cầu, hệ thống áp dụng cố định cho mọi ứng viên.
-        </p>
       </div>
 
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 md:col-span-2">

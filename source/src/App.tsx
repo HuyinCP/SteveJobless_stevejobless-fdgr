@@ -9,7 +9,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { DEFAULT_CONSTRAINTS, generateTeamSuggestions } from "./lib/teamMatching";
 import type { Candidate, FormationConstraints } from "./types";
 
-function StepHeader({ step, title, hint }: { step: number; title: string; hint: string }) {
+function StepHeader({ step, title, hint }: { step: number; title: string; hint?: string }) {
   return (
     <div className="flex items-baseline gap-3 mb-4">
       <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold shrink-0 shadow-sm shadow-blue-600/30">
@@ -17,7 +17,7 @@ function StepHeader({ step, title, hint }: { step: number; title: string; hint: 
       </span>
       <div>
         <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-        <p className="text-sm text-slate-500">{hint}</p>
+        {hint && <p className="text-sm text-slate-500">{hint}</p>}
       </div>
     </div>
   );
@@ -79,8 +79,7 @@ function App() {
           </h1>
           <p className="text-sm sm:text-base text-blue-50/90 mt-2 max-w-2xl">
             Hệ thống nội bộ ghép đội thi ICPC (3 người/đội) cho sinh viên Trường ĐH Khoa học Tự
-            nhiên, ĐHQG-HCM chuẩn bị vòng khu vực — dựa trên ràng buộc năng lực toán/lập trình và số
-            lần đã thi Regional/World Finals.
+            nhiên, ĐHQG-HCM chuẩn bị vòng khu vực.
           </p>
 
           <div className="flex gap-2 mt-6">
@@ -129,7 +128,6 @@ function App() {
           <StepHeader
             step={2}
             title="Khám phá kho ứng viên"
-            hint="Tối thiểu 20 hồ sơ mock. Bỏ chọn 'sẵn sàng' để mô phỏng thay đổi danh sách theo thời gian thực."
           />
           <CandidatePool
             candidates={candidates}
