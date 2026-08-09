@@ -330,6 +330,36 @@ Sửa gốc rễ (không chỉ vá tạm):
 Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass. Hướng dẫn người dùng hard-refresh
 (`Ctrl+Shift+R`) trang đang mở để chắc chắn không còn cache cũ.
 
+## Lượt 32 — User
+
+Dán kết quả Phương án #5 (Trần Thị Bình, Vũ Thị Phương, Chu Thị Quyên — có người huy chương IOI,
+huy chương vàng VOI/Siêu Cúp) nhưng báo cáo giải thích cho thấy đội "thiếu" greedy, brute force,
+constructive algorithms... rồi hỏi:
+
+> "nhưng bạn coi lại tag của những bạn này đi, suy nghĩ thật kỹ xem, những bạn mà có giải quốc gia
+> .... liệu có yếu greedy brute force constructive algorithms không ? bạn phải động não để nghĩ ra
+> skill chứ"
+
+## Lượt 33 — Claude
+
+Nhận ra lỗi thiết kế dữ liệu: mỗi ứng viên trước đó chỉ được gán 2-4 tag "mũi nhọn", mọi tag khác im
+lặng = 0 — khiến học sinh giỏi Quốc gia/Quốc tế (IOI, VOI, VMO...) trông như hoàn toàn không biết
+greedy/brute force, vô lý vì đó là kỹ năng nền ai luyện ICPC cũng thực hành trước khi chuyên sâu.
+
+Tính lại `topicScores` có hệ thống cho cả 20 ứng viên trong `data/candidates.ts`: giữ nguyên tag mũi
+nhọn hiện có, cộng thêm điểm nền cho các tag phổ thông theo công thức tuyến tính từ `mathScore`/
+`codingScore`:
+- `implementation`, `data structures`, `binary search` ≈ `clamp(codingScore - 3, 0, 9)`.
+- `greedy`, `brute force`, `dp` ≈ `clamp(round((mathScore+codingScore)/2) - 3, 0, 9)`.
+- `math`, `graphs` (nếu chưa là mũi nhọn) ≈ `clamp(score - 4, 0, 9)`.
+- Các tag chuyên sâu hiếm (constructive algorithms, strings, number theory, geometry, games, two
+  pointers) giữ nguyên — chỉ xuất hiện khi thực sự là thế mạnh, không rải điểm nền, giống phân bố
+  thật trên Codeforces mà paper IMMS 2018 đã chỉ ra (một số tag hiếm có điểm trung bình thấp ngay cả
+  ở đội vô địch).
+
+Ghi công thức này thành comment ngay đầu `data/candidates.ts` để minh bạch. Chạy lại
+`npx tsc -b --noEmit` và `npm run build` — pass.
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai
