@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "team_name": "SteveJobless",
+  "login": "stevejobless-fdgr",
+  "source_paths": ["source"],
+  "dependency_files": ["source/package.json"],
+  "run_command": "cd source && npm install && npm run dev"
+}
