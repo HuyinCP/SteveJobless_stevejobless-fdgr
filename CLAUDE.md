@@ -49,8 +49,18 @@ viên Trường ĐH Khoa học Tự nhiên, ĐHQG-HCM** chuẩn bị vòng khu v
 đây là quyết định thu hẹp scope có chủ đích, không phải thiếu sót; không thêm lại field/ràng buộc
 "trường" nếu không có yêu cầu mới rõ ràng.
 
+### Ràng buộc theo luật ICPC Global — CỐ ĐỊNH, không phải tham số dự án
+Nguồn: ICPC Regional Rules for Regionals 2024, mục "Team Composition" và "Limits on Participation"
+(xem hằng số trong `source/src/lib/icpcRules.ts`). Đây là luật thi đấu thật, **không cho người dùng
+chỉnh trong UI** — khác với `strongThreshold` (ngưỡng "mạnh") là tiêu chí riêng của dự án, có thể
+điều chỉnh để demo core-flow bước 5.
+- Đúng **3** thành viên/đội ("Each team consists of three contestants").
+- Một ứng viên KHÔNG hợp lệ nếu đã thi quá **5 contest year khác nhau** ở vòng Regional.
+- Một ứng viên KHÔNG hợp lệ nếu đã thi **2 lần World Finals** trở lên.
+- Tất cả thành viên một đội phải cùng một "team institution" — dự án đã thu hẹp scope chỉ phục vụ
+  nội bộ Trường ĐH Khoa học Tự nhiên nên điều kiện này tự động thỏa, không cần field/UI riêng.
+
 ### Ràng buộc dữ liệu ứng viên (bắt buộc)
-- Đã thi ≤ 5 lần vòng Regional, ≤ 2 lần World Finals (WF).
 - Họ tên, MSSV, email sinh viên hợp lệ khi "đăng ký" (dữ liệu mock nhưng phải có validate format).
 - Một ứng viên có thể có **nhiều kỹ năng** cùng lúc (không giả định quan hệ 1-1 người↔kỹ năng).
 - Không lọc theo thông tin nhạy cảm (dân tộc, tôn giáo, quan điểm chính trị) — tuyệt đối không thêm
@@ -59,14 +69,13 @@ viên Trường ĐH Khoa học Tự nhiên, ĐHQG-HCM** chuẩn bị vòng khu v
 
 ### Điều kiện đội hình hợp lệ (4 điều kiện của đề, áp dụng cụ thể cho ICPC)
 1. Không lặp lại cùng một cá nhân trong đội.
-2. Đúng 3 thành viên/đội (ràng buộc số lượng của đề bài ICPC).
+2. Đúng 3 thành viên/đội (cố định theo luật ICPC, xem trên).
 3. Bao phủ 100% năng lực yêu cầu — một trong ba mẫu hình "đội mạnh":
    - ≥1 người tư duy toán tốt (giỏi toán, biết code) + ≥2 người giỏi lập trình, hoặc
    - ≥1 người giỏi lập trình + ≥2 người tư duy toán tốt, hoặc
    - Cả 3 người đều mạnh cả toán và cài đặt thuật toán.
-4. Ràng buộc bổ sung tuyệt đối: mỗi ứng viên tự thân thỏa giới hạn số lần thi Regional/WF nêu trên
-   (ràng buộc cùng trường không cần thiết vì toàn bộ ứng viên mặc định đều thuộc phạm vi nội bộ
-   Trường ĐH Khoa học Tự nhiên).
+4. Ràng buộc bổ sung tuyệt đối: mỗi ứng viên tự thân thỏa giới hạn Regional/WF cố định theo luật ICPC
+   nêu trên.
 
 ### Xử lý ngoại lệ (bắt buộc theo đề, mục 3.4)
 - Khi không có tổ hợp thỏa mãn: báo lỗi rõ ràng, chỉ rõ đang thiếu năng lực/điều kiện gì cụ thể

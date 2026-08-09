@@ -4,6 +4,11 @@ import type { Candidate } from "../types";
 // Phạm vi dự án chỉ phục vụ sinh viên Trường ĐH Khoa học Tự nhiên, ĐHQG-HCM — không có ràng buộc
 // liên trường. Cố ý xen vài hồ sơ vượt giới hạn Regional/WF để việc thay đổi ràng buộc ở bước 5-6
 // của core flow tạo ra khác biệt kết quả thấy được, kể cả trường hợp vô nghiệm.
+//
+// Tên và cơ cấu giải thưởng (achievements) lấy theo hệ thống thi thật tại Việt Nam: VOI/VMO (HSG
+// Quốc gia môn Tin học/Toán), IOI/IMO (Olympic quốc tế), Olympic Tin học Sinh viên Việt Nam (khối
+// Siêu Cúp/Chuyên/Không chuyên — xem olp.vn), Olympic Toán học Sinh viên Việt Nam, ICPC Regional/
+// Vietnam Nationals/World Finals. Năm và kết quả cụ thể là dữ liệu mock, không phải người thật.
 export const INITIAL_CANDIDATES: Candidate[] = [
   {
     id: "c01",
@@ -15,7 +20,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 2,
     wfCount: 0,
     topicTags: ["math", "number theory", "greedy"],
-    achievements: ["Giải Nhì Olympic Toán học Sinh viên"],
+    achievements: [
+      { competition: "VMO (HSG Quốc gia môn Toán)", level: "Quốc gia", year: 2022, result: "Giải Ba" },
+      { competition: "Olympic Toán học Sinh viên Việt Nam", level: "Đại học toàn quốc", year: 2024, result: "Giải Nhì" },
+    ],
     strengths: "Tư duy chứng minh chặt, phát hiện công thức nhanh",
     weaknesses: "Cài đặt còn chậm với cấu trúc dữ liệu phức tạp",
     active: true,
@@ -30,7 +38,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 1,
     wfCount: 0,
     topicTags: ["data structures", "graphs", "implementation"],
-    achievements: ["Top 10 ICPC Vietnam Nationals"],
+    achievements: [
+      { competition: "Học sinh giỏi Tin học cấp Tỉnh/Thành phố", level: "Tỉnh/Thành phố", year: 2021, result: "Giải Nhất" },
+      { competition: "ICPC Vietnam Nationals", level: "Đại học toàn quốc", year: 2025, result: "Top 10" },
+    ],
     strengths: "Code nhanh, ít bug, quen thao tác cấu trúc dữ liệu nâng cao",
     weaknesses: "Chưa tự tin với bài toán chứng minh toán học",
     active: true,
@@ -45,7 +56,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 3,
     wfCount: 1,
     topicTags: ["dp", "graphs", "binary search"],
-    achievements: ["Đã dự thi Regional 3 lần"],
+    achievements: [
+      { competition: "Học sinh giỏi Tin học cấp Tỉnh/Thành phố", level: "Tỉnh/Thành phố", year: 2020, result: "Giải Nhì" },
+      { competition: "ICPC Regional (Asia)", level: "Đại học toàn quốc", year: 2024, result: "Top 20" },
+    ],
     strengths: "Xử lý bài DP/graph ổn định dưới áp lực thời gian",
     weaknesses: "Dễ bỏ sót edge case ở bài hình học",
     active: true,
@@ -60,7 +74,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 0,
     wfCount: 0,
     topicTags: ["math", "geometry", "number theory"],
-    achievements: ["Giải Ba Toán học trẻ toàn quốc"],
+    achievements: [
+      { competition: "VMO (HSG Quốc gia môn Toán)", level: "Quốc gia", year: 2021, result: "Giải Khuyến khích" },
+      { competition: "Olympic Toán học Sinh viên Việt Nam", level: "Đại học toàn quốc", year: 2023, result: "Giải Ba" },
+    ],
     strengths: "Trực giác hình học và số học tốt",
     weaknesses: "Cần thời gian dài hơn để hiện thực hoá ý tưởng thành code",
     active: true,
@@ -75,7 +92,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 4,
     wfCount: 2,
     topicTags: ["implementation", "data structures", "two pointers"],
-    achievements: ["Đã dự World Finals 2 lần"],
+    achievements: [
+      { competition: "Olympic Tin học Sinh viên Việt Nam — Khối Siêu Cúp", level: "Đại học toàn quốc", year: 2023, result: "Huy chương Đồng" },
+      { competition: "ICPC World Finals", level: "Quốc tế", year: 2024, result: "Hạng danh dự" },
+    ],
     strengths: "Rất dày dạn kinh nghiệm thi đấu, tốc độ code cao",
     weaknesses: "Ít khai thác hướng giải toán học sâu",
     active: true,
@@ -90,7 +110,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 1,
     wfCount: 0,
     topicTags: ["math", "dp", "graphs", "geometry"],
-    achievements: ["Huy chương Bạc Olympic Tin học Sinh viên"],
+    achievements: [
+      { competition: "IOI (Olympic Tin học Quốc tế)", level: "Quốc tế", year: 2021, result: "Huy chương Đồng" },
+      { competition: "Olympic Tin học Sinh viên Việt Nam — Khối Chuyên", level: "Đại học toàn quốc", year: 2024, result: "Huy chương Bạc" },
+    ],
     strengths: "Cân bằng cả toán và cài đặt, thường đóng vai trò đầu tàu",
     weaknesses: "Đôi khi ôm quá nhiều bài trong một buổi thi",
     active: true,
@@ -120,7 +143,9 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 5,
     wfCount: 0,
     topicTags: ["math", "greedy"],
-    achievements: ["Đã dự thi Regional 5 lần"],
+    achievements: [
+      { competition: "Học sinh giỏi Toán cấp Tỉnh/Thành phố", level: "Tỉnh/Thành phố", year: 2019, result: "Giải Ba" },
+    ],
     strengths: "Kinh nghiệm thi đấu dày dặn, đọc đề nhanh",
     weaknesses: "Cài đặt còn chậm, hay bị timeout",
     active: true,
@@ -135,7 +160,9 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 2,
     wfCount: 0,
     topicTags: ["graphs", "data structures", "dp"],
-    achievements: [],
+    achievements: [
+      { competition: "Học sinh giỏi Tin học cấp Tỉnh/Thành phố", level: "Tỉnh/Thành phố", year: 2020, result: "Giải Khuyến khích" },
+    ],
     strengths: "Thành thạo thư viện cấu trúc dữ liệu, code sạch",
     weaknesses: "Chưa quen các bài cần biến đổi toán học trước khi cài đặt",
     active: true,
@@ -150,7 +177,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 6,
     wfCount: 0,
     topicTags: ["math", "dp", "geometry"],
-    achievements: ["Đã dự thi Regional 6 lần"],
+    achievements: [
+      { competition: "VMO (HSG Quốc gia môn Toán)", level: "Quốc gia", year: 2020, result: "Giải Nhì" },
+      { competition: "Olympic Tin học Sinh viên Việt Nam — Khối Siêu Cúp", level: "Đại học toàn quốc", year: 2023, result: "Huy chương Vàng" },
+    ],
     strengths: "Toàn diện cả toán và cài đặt",
     weaknesses: "Đã vượt số lần dự thi Regional cho phép theo quy định mặc định",
     active: true,
@@ -165,7 +195,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 0,
     wfCount: 3,
     topicTags: ["math", "number theory"],
-    achievements: ["Đã dự World Finals 3 lần"],
+    achievements: [
+      { competition: "VMO (HSG Quốc gia môn Toán)", level: "Quốc gia", year: 2018, result: "Giải Nhất" },
+      { competition: "IMO (Olympic Toán học Quốc tế)", level: "Quốc tế", year: 2019, result: "Huy chương Bạc" },
+    ],
     strengths: "Nền tảng toán học xuất sắc, dày dạn kinh nghiệm",
     weaknesses: "Đã vượt số lần dự thi World Finals cho phép theo quy định mặc định",
     active: true,
@@ -210,7 +243,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 0,
     wfCount: 1,
     topicTags: ["math", "geometry", "number theory"],
-    achievements: ["Giải Khuyến khích Toán học trẻ toàn quốc"],
+    achievements: [
+      { competition: "VMO (HSG Quốc gia môn Toán)", level: "Quốc gia", year: 2021, result: "Giải Khuyến khích" },
+      { competition: "Olympic Toán học Sinh viên Việt Nam", level: "Đại học toàn quốc", year: 2024, result: "Giải Khuyến khích" },
+    ],
     strengths: "Phân tích bài toán hình học/số học sắc bén",
     weaknesses: "Thời gian hiện thực hoá lời giải còn dài",
     active: true,
@@ -240,7 +276,10 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 0,
     wfCount: 0,
     topicTags: ["math", "dp", "graphs", "geometry"],
-    achievements: ["Huy chương Vàng Olympic Tin học Sinh viên"],
+    achievements: [
+      { competition: "VOI (HSG Quốc gia môn Tin học)", level: "Quốc gia", year: 2022, result: "Giải Nhất" },
+      { competition: "Olympic Tin học Sinh viên Việt Nam — Khối Siêu Cúp", level: "Đại học toàn quốc", year: 2025, result: "Huy chương Vàng" },
+    ],
     strengths: "Toàn diện, thường là hạt nhân chiến thuật của đội",
     weaknesses: "Chưa có kinh nghiệm thi Regional",
     active: true,
@@ -255,7 +294,9 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 1,
     wfCount: 0,
     topicTags: ["graphs", "data structures", "binary search"],
-    achievements: [],
+    achievements: [
+      { competition: "Học sinh giỏi Tin học cấp Tỉnh/Thành phố", level: "Tỉnh/Thành phố", year: 2021, result: "Giải Nhì" },
+    ],
     strengths: "Vững cả lý thuyết đồ thị và cài đặt cấu trúc dữ liệu",
     weaknesses: "Cần cải thiện tốc độ đọc đề bài dài",
     active: true,
@@ -270,7 +311,9 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 0,
     wfCount: 0,
     topicTags: ["strings", "data structures", "constructive algorithms"],
-    achievements: ["Top 5 ICPC Vietnam Nationals"],
+    achievements: [
+      { competition: "ICPC Vietnam Nationals", level: "Đại học toàn quốc", year: 2025, result: "Top 5" },
+    ],
     strengths: "Cài đặt các bài chuỗi/cấu trúc dữ liệu rất nhanh và chắc",
     weaknesses: "Ít kinh nghiệm với bài toán game theory",
     active: true,
@@ -300,7 +343,9 @@ export const INITIAL_CANDIDATES: Candidate[] = [
     regionalCount: 3,
     wfCount: 1,
     topicTags: ["math", "dp", "games", "number theory"],
-    achievements: ["Đã dự thi Regional 3 lần"],
+    achievements: [
+      { competition: "Olympic Tin học Sinh viên Việt Nam — Khối Chuyên", level: "Đại học toàn quốc", year: 2024, result: "Giải Ba" },
+    ],
     strengths: "Cân bằng tốt, đặc biệt mạnh ở bài game theory hiếm gặp",
     weaknesses: "Chưa thử sức ở các bài hình học phức tạp",
     active: true,

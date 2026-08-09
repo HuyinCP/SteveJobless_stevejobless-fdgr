@@ -1,3 +1,4 @@
+import { ICPC_MAX_REGIONAL_YEARS, ICPC_MAX_WORLD_FINALS } from "../lib/icpcRules";
 import type { Candidate } from "../types";
 
 interface Props {
@@ -9,7 +10,8 @@ interface Props {
 export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Props) {
   const mathStrong = candidate.mathScore >= strongThreshold;
   const codingStrong = candidate.codingScore >= strongThreshold;
-  const overLimit = candidate.regionalCount > 5 || candidate.wfCount > 2;
+  const overLimit =
+    candidate.regionalCount > ICPC_MAX_REGIONAL_YEARS || candidate.wfCount > ICPC_MAX_WORLD_FINALS;
 
   return (
     <div
@@ -70,6 +72,16 @@ export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Pr
       <p className="text-xs text-slate-500">
         <b>Cần cải thiện:</b> {candidate.weaknesses}
       </p>
+
+      {candidate.achievements.length > 0 && (
+        <ul className="text-xs text-slate-600 space-y-0.5 list-disc pl-4">
+          {candidate.achievements.map((a, i) => (
+            <li key={i}>
+              {a.competition} ({a.level}, {a.year}) — {a.result}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

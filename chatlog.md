@@ -185,6 +185,74 @@ Trường ĐH Khoa học Tự nhiên. Thay đổi cụ thể:
 Chạy lại `npx tsc -b --noEmit` và `npm run build` — cả hai đều pass sau khi sửa các lỗi do xoá field
 (`members` không dùng trong `buildExplanation`, thiếu argument ở lời gọi).
 
+Hỏi xác nhận trước khi commit/push (hành động công khai). User xác nhận → `git add -A`, commit
+`1fcf9f4` ("Giam scope: bo rang buoc/khai niem da truong"), push lên `origin/master`.
+
+## Lượt 22 — User
+
+> "phần Khai báo mục tiêu & ràng buộc chưa hợp lý lắm
+> thứ nhất là: bản chất 1 đội là 3 người, sao lại cho user chọn số lượng người trong một đội ?
+> thứ hai là: số lần thi Regional và WF nữa, những phần nảy phải là cố định mà, trong quy định icpc
+> global, bạn lên xem thử."
+
+## Lượt 23 — Claude
+
+Đồng ý về nguyên tắc trước khi sửa, tra cứu luật ICPC Global bằng `WebSearch` + `WebFetch` (đọc PDF
+"ICPC Regional Rules for Regionals 2024" tải về qua WebFetch, dùng Read tool đọc trực tiếp nội dung
+PDF). Xác nhận từ văn bản gốc, mục "Team Composition" và "Limits on Participation":
+- "Each team consists of three contestants" → team size cố định = 3.
+- "A student who has competed in qualifying regional contests during five different contest years is
+  NOT eligible to compete" → tối đa 5 năm thi Regional, cố định.
+- "A student who has competed in two ICPC World Finals is NOT eligible to compete in ICPC Regionals"
+  → tối đa 2 lần World Finals, cố định.
+- (Ngoài ra văn bản còn xác nhận "All team members must be enrolled in the same degree-granting
+  institution" — khớp với quyết định giảm scope một-trường ở Lượt 21, không cần khôi phục field
+  `school`.)
+
+Thực hiện thay đổi:
+- Tạo `source/src/lib/icpcRules.ts` — hằng số `ICPC_TEAM_SIZE=3`, `ICPC_MAX_REGIONAL_YEARS=5`,
+  `ICPC_MAX_WORLD_FINALS=2`, kèm trích dẫn nguồn.
+- `types/index.ts`: `FormationConstraints` rút gọn chỉ còn `strongThreshold` (tham số dự án thật sự
+  có thể chỉnh) — bỏ `teamSize`, `maxRegional`, `maxWF` khỏi state người dùng chỉnh được.
+- `lib/teamMatching.ts`: dùng hằng số `icpcRules.ts` cố định cho việc lọc điều kiện hợp lệ và sinh
+  tổ hợp, không còn đọc từ `constraints`.
+- `components/ConstraintsForm.tsx`: viết lại — hiển thị 3 ràng buộc ICPC dưới dạng badge chỉ đọc
+  (không phải input), chỉ giữ lại slider `strongThreshold` là điều chỉnh được.
+- `components/CandidateCard.tsx`: dùng hằng số `ICPC_MAX_REGIONAL_YEARS`/`ICPC_MAX_WORLD_FINALS`
+  thay số cứng 5/2.
+- `App.tsx`: bỏ preset "Siết Regional ≤ 1, WF = 0" (không còn hợp lệ vì không thể chỉnh luật ICPC),
+  thay bằng preset "Hạ ngưỡng mạnh xuống 5/10".
+- `CLAUDE.md`/`README.md`: thêm mục trích dẫn luật ICPC cố định, phân biệt rõ với `strongThreshold`
+  là tiêu chí riêng của dự án.
+
+Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass.
+
+## Lượt 24 — User (chèn giữa lượt đang xử lý, qua system-reminder)
+
+> "theo tôi nghĩ phần achievements nên chia nhỏ ra nữa cụ thể hóa ra, lúc cấp 3 ở việt nam thì có
+> giải quốc gia VOI, VMO,... giải quốc tế IMO, IOI, giải tỉnh (năm nào ?) cần cụ thể hóa ra, rồi lúc
+> lên đại học thi icpc rank mấy rồi huy chương gì, rồi olp tin học sinh viên, olp toán học sinh viên,
+> giải siêu cúp sinh viên, bạn lên hệ thống olp tin học việt nam hay icpc để xem kỹ hơn
+> https://www.olp.vn/ cụ thể hóa ra năm đó là năm nào"
+
+## Lượt 25 — Claude
+
+Tra cứu `olp.vn` bằng `WebFetch`/`WebSearch` để lấy đúng tên/cơ cấu giải Olympic Tin học Sinh viên
+Việt Nam: xác nhận có khối cá nhân "A (Siêu Cúp), B (Chuyên), C (Không chuyên)" và Siêu Cúp
+2025 do đội HCMUS vô địch (nguồn: hcmus.edu.vn). Từ đó:
+
+- `types/index.ts`: thêm `AchievementLevel` và interface `Achievement { competition, level, year,
+  result }`; đổi `Candidate.achievements` từ `string[]` sang `Achievement[]`.
+- `data/candidates.ts`: viết lại toàn bộ trường `achievements` của 20 ứng viên thành các mục cụ thể
+  theo hệ thống thi thật — VOI/VMO (HSG Quốc gia Tin học/Toán), IOI/IMO (Olympic quốc tế), Olympic
+  Tin học Sinh viên Việt Nam (khối Siêu Cúp/Chuyên), Olympic Toán học Sinh viên Việt Nam, ICPC
+  Regional/Vietnam Nationals/World Finals — mỗi mục có năm và kết quả cụ thể (dữ liệu mock nhưng
+  theo khung thật, không phải người thật). Thêm ghi chú nguồn ở đầu file.
+- `components/CandidateCard.tsx`: thêm danh sách hiển thị achievements (tên giải, cấp độ, năm, kết
+  quả) — trước đó field này tồn tại trong data nhưng không hiển thị ở UI.
+
+Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass.
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai

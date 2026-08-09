@@ -16,8 +16,10 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
 
 ## 2. Tính năng chính
 
-- **Khai báo mục tiêu & ràng buộc**: số thành viên/đội, ngưỡng "mạnh" cho điểm toán/lập trình, giới
-  hạn số lần thi Regional/World Finals.
+- **Khai báo mục tiêu & ràng buộc**: hiển thị các ràng buộc cố định theo luật ICPC Global (đúng 3
+  thành viên/đội, tối đa 5 năm thi Regional, tối đa 2 lần World Finals — không thể chỉnh, vì đây là
+  luật thi đấu thật) và cho phép điều chỉnh ngưỡng "mạnh" cho điểm toán/lập trình (tiêu chí riêng của
+  dự án).
 - **Khám phá kho ứng viên**: tối thiểu 20 hồ sơ mock, tìm kiếm theo tên/MSSV, xem chi tiết điểm
   mạnh/yếu, thành tích và các chủ đề (tag Codeforces) mỗi người mạnh — một ứng viên có thể mang
   nhiều chủ đề cùng lúc.
@@ -82,6 +84,7 @@ SteveJobless_stevejobless-fdgr/
         ├── types/index.ts        <- model dữ liệu (Candidate, FormationConstraints, ...)
         ├── data/candidates.ts    <- 20 hồ sơ ứng viên mock
         ├── lib/teamMatching.ts   <- thuật toán ghép đội + chẩn đoán vô nghiệm
+        ├── lib/icpcRules.ts      <- hằng số luật ICPC cố định (team size, giới hạn Regional/WF)
         ├── hooks/useLocalStorage.ts
         └── components/           <- ConstraintsForm, CandidatePool, CandidateCard,
                                       SuggestionResults, SuggestionCard, DeficiencyPanel

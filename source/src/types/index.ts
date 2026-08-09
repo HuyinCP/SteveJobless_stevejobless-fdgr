@@ -33,6 +33,16 @@ export const ALL_TOPIC_TAGS: TopicTag[] = [
   "two pointers",
 ];
 
+// Cấp độ giải thưởng, theo hệ thống thi học sinh giỏi/Olympic sinh viên tại Việt Nam.
+export type AchievementLevel = "Tỉnh/Thành phố" | "Quốc gia" | "Quốc tế" | "Đại học toàn quốc";
+
+export interface Achievement {
+  competition: string; // tên kỳ thi, ví dụ "VMO", "VOI", "IOI", "Olympic Tin học Sinh viên — Khối Siêu Cúp"
+  level: AchievementLevel;
+  year: number;
+  result: string; // ví dụ "Giải Nhất", "Huy chương Vàng", "Top 10"
+}
+
 export interface Candidate {
   id: string;
   fullName: string;
@@ -43,17 +53,14 @@ export interface Candidate {
   regionalCount: number; // số lần đã thi vòng Regional
   wfCount: number; // số lần đã thi World Finals
   topicTags: TopicTag[]; // chủ đề mạnh theo tag Codeforces — một ứng viên có thể có nhiều tag
-  achievements: string[];
+  achievements: Achievement[];
   strengths: string;
   weaknesses: string;
   active: boolean; // đang sẵn sàng tham gia ghép đội (có thể tắt để mô phỏng cập nhật động)
 }
 
 export interface FormationConstraints {
-  teamSize: number;
-  maxRegional: number;
-  maxWF: number;
-  strongThreshold: number; // điểm >= threshold thì coi là "mạnh" ở mảng đó
+  strongThreshold: number; // điểm >= threshold thì coi là "mạnh" ở mảng đó — tham số dự án, không phải luật ICPC
 }
 
 export interface RoleAssignment {

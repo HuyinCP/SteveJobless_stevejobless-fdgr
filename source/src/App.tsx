@@ -138,10 +138,10 @@ function App() {
                   Nâng ngưỡng "mạnh" lên 9/10
                 </button>
                 <button
-                  onClick={() => setConstraints((c) => ({ ...c, maxRegional: 1, maxWF: 0 }))}
+                  onClick={() => setConstraints((c) => ({ ...c, strongThreshold: 5 }))}
                   className="text-sm rounded border border-slate-300 px-3 py-1.5 bg-white hover:bg-slate-50"
                 >
-                  Siết Regional ≤ 1, WF = 0
+                  Hạ ngưỡng "mạnh" xuống 5/10
                 </button>
                 <button
                   onClick={() => setConstraints(DEFAULT_CONSTRAINTS)}

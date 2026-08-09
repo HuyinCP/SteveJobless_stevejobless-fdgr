@@ -8,11 +8,9 @@ import type {
   TeamSuggestion,
   TopicTag,
 } from "../types";
+import { ICPC_MAX_REGIONAL_YEARS, ICPC_MAX_WORLD_FINALS, ICPC_TEAM_SIZE } from "./icpcRules";
 
 export const DEFAULT_CONSTRAINTS: FormationConstraints = {
-  teamSize: 3,
-  maxRegional: 5,
-  maxWF: 2,
   strongThreshold: 7,
 };
 
@@ -92,8 +90,7 @@ function buildExplanation(
   roles: RoleAssignment[],
   pattern: string,
   covered: TopicTag[],
-  missing: TopicTag[],
-  constraints: FormationConstraints
+  missing: TopicTag[]
 ): string[] {
   const lines: string[] = [];
   lines.push(`Mẫu hình đội mạnh đạt được: ${pattern}`);
@@ -107,7 +104,7 @@ function buildExplanation(
       (missing.length ? ` Còn thiếu: ${missing.join(", ")}.` : " Không thiếu chủ đề nào.")
   );
   lines.push(
-    `Mỗi thành viên đều thỏa giới hạn ≤ ${constraints.maxRegional} lần Regional và ≤ ${constraints.maxWF} lần World Finals.`
+    `Mỗi thành viên đều thỏa giới hạn ICPC: ≤ ${ICPC_MAX_REGIONAL_YEARS} năm thi Regional và ≤ ${ICPC_MAX_WORLD_FINALS} lần thi World Finals.`
   );
   return lines;
 }
@@ -117,8 +114,8 @@ function diagnose(eligible: Candidate[], constraints: FormationConstraints): Def
   const codingStrongCount = eligible.filter((c) => isCodingStrong(c, constraints.strongThreshold)).length;
 
   let reason: string;
-  if (eligible.length < constraints.teamSize) {
-    reason = `Chỉ có ${eligible.length} ứng viên hợp lệ, cần tối thiểu ${constraints.teamSize} người.`;
+  if (eligible.length < ICPC_TEAM_SIZE) {
+    reason = `Chỉ có ${eligible.length} ứng viên hợp lệ (đã thỏa giới hạn ICPC), cần tối thiểu ${ICPC_TEAM_SIZE} người.`;
   } else {
     reason =
       `Có ${eligible.length} ứng viên hợp lệ nhưng không tổ hợp nào phủ đủ năng lực yêu cầu ` +
@@ -134,13 +131,13 @@ export function generateTeamSuggestions(
 ): FormationResult {
   const active = allCandidates.filter((c) => c.active);
   const eligible = active.filter(
-    (c) => c.regionalCount <= constraints.maxRegional && c.wfCount <= constraints.maxWF
+    (c) => c.regionalCount <= ICPC_MAX_REGIONAL_YEARS && c.wfCount <= ICPC_MAX_WORLD_FINALS
   );
 
   const suggestions: TeamSuggestion[] = [];
 
-  if (eligible.length >= constraints.teamSize) {
-    const combos = combinations(eligible, constraints.teamSize);
+  if (eligible.length >= ICPC_TEAM_SIZE) {
+    const combos = combinations(eligible, ICPC_TEAM_SIZE);
     combos.forEach((members) => {
       const pattern = evaluatePattern(members, constraints.strongThreshold);
       if (!pattern) return;
@@ -155,7 +152,7 @@ export function generateTeamSuggestions(
         pattern,
         coveredTopics: covered,
         missingTopics: missing,
-        explanation: buildExplanation(roleAssignments, pattern, covered, missing, constraints),
+        explanation: buildExplanation(roleAssignments, pattern, covered, missing),
       });
     });
   }
