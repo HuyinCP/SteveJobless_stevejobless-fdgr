@@ -13,9 +13,7 @@ export const DEFAULT_CONSTRAINTS: FormationConstraints = {
   teamSize: 3,
   maxRegional: 5,
   maxWF: 2,
-  requireSameSchool: true,
   strongThreshold: 7,
-  requiredSchool: "",
 };
 
 function combinations<T>(items: T[], k: number): T[][] {
@@ -91,12 +89,10 @@ function scoreTeam(members: Candidate[], covered: TopicTag[]): number {
 }
 
 function buildExplanation(
-  members: Candidate[],
   roles: RoleAssignment[],
   pattern: string,
   covered: TopicTag[],
   missing: TopicTag[],
-  school: string,
   constraints: FormationConstraints
 ): string[] {
   const lines: string[] = [];
@@ -110,41 +106,26 @@ function buildExplanation(
     `Phủ ${covered.length}/${ALL_TOPIC_TAGS.length} chủ đề Codeforces: ${covered.join(", ") || "không có"}.` +
       (missing.length ? ` Còn thiếu: ${missing.join(", ")}.` : " Không thiếu chủ đề nào.")
   );
-  lines.push(`Cả ${members.length} thành viên cùng thuộc ${school}.`);
   lines.push(
     `Mỗi thành viên đều thỏa giới hạn ≤ ${constraints.maxRegional} lần Regional và ≤ ${constraints.maxWF} lần World Finals.`
   );
   return lines;
 }
 
-function diagnoseGroup(
-  school: string,
-  eligible: Candidate[],
-  constraints: FormationConstraints
-): DeficiencyReason {
+function diagnose(eligible: Candidate[], constraints: FormationConstraints): DeficiencyReason {
   const mathStrongCount = eligible.filter((c) => isMathStrong(c, constraints.strongThreshold)).length;
   const codingStrongCount = eligible.filter((c) => isCodingStrong(c, constraints.strongThreshold)).length;
 
   let reason: string;
   if (eligible.length < constraints.teamSize) {
-    reason = `Chỉ có ${eligible.length} ứng viên hợp lệ ở ${school}, cần tối thiểu ${constraints.teamSize} người.`;
+    reason = `Chỉ có ${eligible.length} ứng viên hợp lệ, cần tối thiểu ${constraints.teamSize} người.`;
   } else {
     reason =
-      `${school} có ${eligible.length} ứng viên hợp lệ nhưng không tổ hợp nào phủ đủ năng lực yêu cầu ` +
+      `Có ${eligible.length} ứng viên hợp lệ nhưng không tổ hợp nào phủ đủ năng lực yêu cầu ` +
       `(hiện có ${mathStrongCount} người tư duy toán tốt và ${codingStrongCount} người giỏi lập trình đạt ngưỡng ${constraints.strongThreshold}/10; ` +
       `cần tối thiểu 1 người ở mảng này + 2 người ở mảng còn lại, hoặc ngược lại).`;
   }
-  return { school, eligibleCount: eligible.length, mathStrongCount, codingStrongCount, reason };
-}
-
-function groupBySchool(candidates: Candidate[]): Map<string, Candidate[]> {
-  const groups = new Map<string, Candidate[]>();
-  candidates.forEach((c) => {
-    const arr = groups.get(c.school) ?? [];
-    arr.push(c);
-    groups.set(c.school, arr);
-  });
-  return groups;
+  return { eligibleCount: eligible.length, mathStrongCount, codingStrongCount, reason };
 }
 
 export function generateTeamSuggestions(
@@ -156,31 +137,13 @@ export function generateTeamSuggestions(
     (c) => c.regionalCount <= constraints.maxRegional && c.wfCount <= constraints.maxWF
   );
 
-  let groups: Map<string, Candidate[]>;
-  if (constraints.requiredSchool) {
-    groups = new Map([[constraints.requiredSchool, eligible.filter((c) => c.school === constraints.requiredSchool)]]);
-  } else if (constraints.requireSameSchool) {
-    groups = groupBySchool(eligible);
-  } else {
-    groups = new Map([["Nhiều trường (không yêu cầu cùng trường)", eligible]]);
-  }
-
   const suggestions: TeamSuggestion[] = [];
-  const deficiencies: DeficiencyReason[] = [];
 
-  groups.forEach((groupCandidates, school) => {
-    if (groupCandidates.length < constraints.teamSize) {
-      deficiencies.push(diagnoseGroup(school, groupCandidates, constraints));
-      return;
-    }
-
-    const combos = combinations(groupCandidates, constraints.teamSize);
-    let foundAny = false;
-
+  if (eligible.length >= constraints.teamSize) {
+    const combos = combinations(eligible, constraints.teamSize);
     combos.forEach((members) => {
       const pattern = evaluatePattern(members, constraints.strongThreshold);
       if (!pattern) return;
-      foundAny = true;
       const roleAssignments = assignRoles(members, constraints.strongThreshold);
       const { covered, missing } = topicCoverage(members);
       const score = scoreTeam(members, covered);
@@ -188,26 +151,21 @@ export function generateTeamSuggestions(
         id: members.map((m) => m.id).join("-"),
         members,
         roleAssignments,
-        school,
         score,
         pattern,
         coveredTopics: covered,
         missingTopics: missing,
-        explanation: buildExplanation(members, roleAssignments, pattern, covered, missing, school, constraints),
+        explanation: buildExplanation(roleAssignments, pattern, covered, missing, constraints),
       });
     });
-
-    if (!foundAny) {
-      deficiencies.push(diagnoseGroup(school, groupCandidates, constraints));
-    }
-  });
+  }
 
   suggestions.sort((a, b) => b.score - a.score);
 
   return {
     status: suggestions.length > 0 ? "ok" : "no-solution",
     suggestions: suggestions.slice(0, 5),
-    deficiencies,
+    deficiencies: suggestions.length > 0 ? [] : [diagnose(eligible, constraints)],
     generatedAt: Date.now(),
   };
 }

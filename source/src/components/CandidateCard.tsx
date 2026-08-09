@@ -20,9 +20,7 @@ export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Pr
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="font-semibold text-slate-900">{candidate.fullName}</p>
-          <p className="text-xs text-slate-500">
-            {candidate.mssv} · {candidate.school}
-          </p>
+          <p className="text-xs text-slate-500">{candidate.mssv}</p>
         </div>
         <label className="flex items-center gap-1 text-xs text-slate-600 shrink-0">
           <input

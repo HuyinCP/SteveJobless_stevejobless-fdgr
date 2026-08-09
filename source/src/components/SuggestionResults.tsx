@@ -11,7 +11,7 @@ interface Props {
 export function SuggestionResults({ result, selectedId, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-3">
-      <DeficiencyPanel deficiencies={result.deficiencies} totalSuggestions={result.suggestions.length} />
+      <DeficiencyPanel deficiencies={result.deficiencies} />
       {result.suggestions.map((s, i) => (
         <SuggestionCard
           key={s.id}

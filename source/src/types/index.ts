@@ -38,7 +38,6 @@ export interface Candidate {
   fullName: string;
   mssv: string;
   email: string;
-  school: string;
   mathScore: number; // 0-10, tư duy toán / giải thuật
   codingScore: number; // 0-10, cài đặt / lập trình thi đấu
   regionalCount: number; // số lần đã thi vòng Regional
@@ -54,9 +53,7 @@ export interface FormationConstraints {
   teamSize: number;
   maxRegional: number;
   maxWF: number;
-  requireSameSchool: boolean;
   strongThreshold: number; // điểm >= threshold thì coi là "mạnh" ở mảng đó
-  requiredSchool: string | ""; // "" = không giới hạn trường cụ thể
 }
 
 export interface RoleAssignment {
@@ -68,7 +65,6 @@ export interface TeamSuggestion {
   id: string;
   members: Candidate[];
   roleAssignments: RoleAssignment[];
-  school: string;
   score: number;
   pattern: string; // mẫu hình "đội mạnh" mà đội này đạt được (rule cứng theo đề)
   coveredTopics: TopicTag[]; // phủ tag thực tế — chỉ dùng để xếp hạng/giải thích, không quyết định hợp lệ
@@ -77,7 +73,6 @@ export interface TeamSuggestion {
 }
 
 export interface DeficiencyReason {
-  school: string;
   eligibleCount: number;
   mathStrongCount: number;
   codingStrongCount: number;

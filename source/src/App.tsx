@@ -33,11 +33,6 @@ function App() {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const schools = useMemo(
-    () => Array.from(new Set(candidates.map((c) => c.school))).sort(),
-    [candidates]
-  );
-
   const result = useMemo(
     () => generateTeamSuggestions(candidates, constraints),
     [candidates, constraints]
@@ -68,9 +63,9 @@ function App() {
           </p>
           <h1 className="text-2xl font-bold text-slate-900">ICPC Squad Finder</h1>
           <p className="text-sm text-slate-600 mt-1">
-            Hệ thống ghép đội thi ICPC (3 người/đội) cho sinh viên Trường ĐH Khoa học Tự nhiên,
-            ĐHQG-HCM chuẩn bị vòng khu vực — dựa trên ràng buộc năng lực toán/lập trình, số lần đã
-            thi Regional/World Finals và ràng buộc cùng trường.
+            Hệ thống nội bộ ghép đội thi ICPC (3 người/đội) cho sinh viên Trường ĐH Khoa học Tự
+            nhiên, ĐHQG-HCM chuẩn bị vòng khu vực — dựa trên ràng buộc năng lực toán/lập trình và số
+            lần đã thi Regional/World Finals.
           </p>
         </div>
       </header>
@@ -82,7 +77,7 @@ function App() {
             title="Khai báo mục tiêu & ràng buộc"
             hint="Thiết lập điều kiện cho dự án ghép đội ICPC lần này."
           />
-          <ConstraintsForm constraints={constraints} schools={schools} onChange={setConstraints} />
+          <ConstraintsForm constraints={constraints} onChange={setConstraints} />
         </section>
 
         <section>
@@ -94,7 +89,6 @@ function App() {
           <CandidatePool
             candidates={candidates}
             strongThreshold={constraints.strongThreshold}
-            schools={schools}
             onToggleActive={toggleActive}
           />
         </section>

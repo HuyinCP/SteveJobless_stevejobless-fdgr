@@ -44,8 +44,10 @@ SteveJobless_stevejobless-fdgr/        <- repo root, khớp [TênĐội]_[Tên �
 ## 3. Đề bài đã chọn — Team-Matching cho ICPC
 
 Đề chính thức: xây hệ thống khám phá/đánh giá/ghép đội dựa trên ràng buộc đa biến, bối cảnh tự chọn.
-Bối cảnh nhóm chọn: **ghép đội thi ICPC** (mỗi đội 3 người) cho sinh viên Trường ĐH Khoa học Tự nhiên,
-ĐHQG-HCM chuẩn bị vòng khu vực.
+Bối cảnh nhóm chọn: **ghép đội thi ICPC** (mỗi đội 3 người) — **phạm vi nội bộ, chỉ dành cho sinh
+viên Trường ĐH Khoa học Tự nhiên, ĐHQG-HCM** chuẩn bị vòng khu vực. Không mở rộng liên trường —
+đây là quyết định thu hẹp scope có chủ đích, không phải thiếu sót; không thêm lại field/ràng buộc
+"trường" nếu không có yêu cầu mới rõ ràng.
 
 ### Ràng buộc dữ liệu ứng viên (bắt buộc)
 - Đã thi ≤ 5 lần vòng Regional, ≤ 2 lần World Finals (WF).
@@ -62,12 +64,13 @@ Bối cảnh nhóm chọn: **ghép đội thi ICPC** (mỗi đội 3 người) c
    - ≥1 người tư duy toán tốt (giỏi toán, biết code) + ≥2 người giỏi lập trình, hoặc
    - ≥1 người giỏi lập trình + ≥2 người tư duy toán tốt, hoặc
    - Cả 3 người đều mạnh cả toán và cài đặt thuật toán.
-4. Ràng buộc bổ sung tuyệt đối: cả 3 thành viên **cùng một trường**; mỗi ứng viên tự thân thỏa
-   giới hạn số lần thi Regional/WF nêu trên.
+4. Ràng buộc bổ sung tuyệt đối: mỗi ứng viên tự thân thỏa giới hạn số lần thi Regional/WF nêu trên
+   (ràng buộc cùng trường không cần thiết vì toàn bộ ứng viên mặc định đều thuộc phạm vi nội bộ
+   Trường ĐH Khoa học Tự nhiên).
 
 ### Xử lý ngoại lệ (bắt buộc theo đề, mục 3.4)
 - Khi không có tổ hợp thỏa mãn: báo lỗi rõ ràng, chỉ rõ đang thiếu năng lực/điều kiện gì cụ thể
-  (ví dụ: "Không tìm được ứng viên tư duy toán tốt cùng trường X còn đủ điều kiện Regional").
+  (ví dụ: "Không tìm đủ ứng viên tư duy toán tốt còn thỏa điều kiện Regional/WF").
 - Cấm: tự sinh dữ liệu giả lấp chỗ trống, lặp lại thành viên, treo vô hạn, lỗi `undefined`, màn hình
   trắng. Mọi nhánh lỗi phải render UI thông báo có nội dung.
 - Khi người dùng thay đổi ràng buộc hoặc danh sách ứng viên real-time, các đề xuất cũ không còn thỏa

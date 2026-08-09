@@ -2,11 +2,10 @@ import type { FormationConstraints } from "../types";
 
 interface Props {
   constraints: FormationConstraints;
-  schools: string[];
   onChange: (next: FormationConstraints) => void;
 }
 
-export function ConstraintsForm({ constraints, schools, onChange }: Props) {
+export function ConstraintsForm({ constraints, onChange }: Props) {
   const set = <K extends keyof FormationConstraints>(key: K, value: FormationConstraints[K]) =>
     onChange({ ...constraints, [key]: value });
 
@@ -64,35 +63,6 @@ export function ConstraintsForm({ constraints, schools, onChange }: Props) {
           min={0}
           onChange={(e) => set("maxWF", Number(e.target.value))}
         />
-      </div>
-
-      <div className="bg-white rounded-lg border border-slate-200 p-4 flex items-center justify-between">
-        <div>
-          <label className="block text-sm font-medium text-slate-700">Bắt buộc cùng trường</label>
-          <p className="text-xs text-slate-500">3 thành viên phải học cùng một trường.</p>
-        </div>
-        <input
-          type="checkbox"
-          className="w-5 h-5"
-          checked={constraints.requireSameSchool}
-          onChange={(e) => set("requireSameSchool", e.target.checked)}
-        />
-      </div>
-
-      <div className="bg-white rounded-lg border border-slate-200 p-4">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Giới hạn vào một trường cụ thể</label>
-        <select
-          className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900"
-          value={constraints.requiredSchool}
-          onChange={(e) => set("requiredSchool", e.target.value)}
-        >
-          <option value="">Không giới hạn</option>
-          {schools.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
       </div>
     </div>
   );

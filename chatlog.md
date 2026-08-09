@@ -121,7 +121,69 @@ Viết `README.md` đầy đủ 7 mục bắt buộc theo `spd-public-structure-
 ## Lượt 13 — Claude (tiếp)
 
 Khởi tạo `chatlog.md` (tệp này). Sau đó: `git init`, add toàn bộ file (trừ những gì bị `.gitignore`
-loại), commit đầu tiên.
+loại), commit đầu tiên (`58b2b98`).
+
+## Lượt 14 — User
+
+> "bạn đã dựng git chưa và là link nào ?"
+
+## Lượt 15 — Claude
+
+Kiểm tra `git remote -v` và `gh auth status` — xác nhận repo mới chỉ có local commit, chưa có
+remote/GitHub link, `gh` CLI chưa cài trên máy.
+
+## Lượt 16 — User
+
+> "tên đội tôi là SteveJobless và tên đăng nhập là stevejobless-fdgr bạn coi lại thử đặt đúng tên
+> chưa https://github.com/HuyinCP/SteveJobless_stevejobless-fdgr.git"
+
+## Lượt 17 — Claude
+
+Đối chiếu lại: tên thư mục repo root, `submission.json` (`team_name`, `login`) đều đã khớp
+`SteveJobless` / `stevejobless-fdgr`. Thêm remote `origin` từ URL do user cung cấp, hỏi xác nhận
+trước khi push (hành động công khai). User xác nhận ("Pại, push ngay") → `git push -u origin
+master` thành công.
+
+## Lượt 18 — User
+
+> "tổng kết lại bạn hoàn thành dự án tới đâu rồi, có thể chỉ tôi cách chạy để xem không"
+
+## Lượt 19 — Claude
+
+Tổng kết tiến độ, nêu rõ phần chưa làm (đăng ký tài khoản theo `description.txt` gốc — bị bỏ vì đề
+chính thức không yêu cầu) và giới hạn (chưa tự mắt kiểm tra UI). Dùng skill `run`: không có project
+skill / `chromium-cli` sẵn có trên máy Windows này, nên khởi động `npm run dev` (cổng 5173) và mở
+trực tiếp bằng trình duyệt thật của người dùng qua `Start-Process` (PowerShell) thay vì headless
+screenshot, vì đây là máy desktop thật có GUI, không phải container cold-start.
+
+## Lượt 20 — User
+
+Chọn dòng `chatlog.md` trong IDE (không phải yêu cầu cụ thể), rồi:
+
+> "tôi muốn xác nhận lại scope của dự án, hiện tại chúng ta chỉ đang dev internal project cho
+> trường đại học khoa học tự nhiên, các trường khác không liên quan, giảm scope xuống"
+
+## Lượt 21 — Claude
+
+Giảm scope theo yêu cầu: bỏ hoàn toàn khái niệm đa trường vì dự án chỉ phục vụ nội bộ sinh viên
+Trường ĐH Khoa học Tự nhiên. Thay đổi cụ thể:
+
+- `types/index.ts`: bỏ `Candidate.school`, `FormationConstraints.requireSameSchool`/`requiredSchool`,
+  `TeamSuggestion.school`, `DeficiencyReason.school`.
+- `data/candidates.ts`: bỏ field `school` và 2 hằng `SCHOOL_HCMUS`/`SCHOOL_HCMUT`; chuẩn hoá 3 hồ sơ
+  từng gán "Bách Khoa" (c16-c18) thành MSSV/email theo định dạng HCMUS cho đồng nhất.
+- `lib/teamMatching.ts`: bỏ `groupBySchool`/nhánh `requiredSchool`/`requireSameSchool`, đơn giản hoá
+  `generateTeamSuggestions` để chạy trực tiếp trên toàn bộ ứng viên hợp lệ (không group theo trường);
+  `diagnose` không còn nhận `school`.
+- Components: bỏ prop `schools` và UI liên quan ở `ConstraintsForm` (2 field "cùng trường"),
+  `CandidatePool` (dropdown lọc trường), `CandidateCard` (hiển thị trường); đơn giản hoá
+  `DeficiencyPanel` (chỉ còn 1 khối lỗi vô nghiệm, bỏ nhánh "một số trường không tạo được đội").
+- `App.tsx`: bỏ `useMemo` tính `schools`, bỏ truyền prop `schools`, sửa câu mô tả trong header (bỏ
+  "ràng buộc cùng trường").
+- `CLAUDE.md`/`README.md`: cập nhật mô tả scope, bỏ mọi nhắc tới ràng buộc/tính năng liên trường.
+
+Chạy lại `npx tsc -b --noEmit` và `npm run build` — cả hai đều pass sau khi sửa các lỗi do xoá field
+(`members` không dùng trong `buildExplanation`, thiếu argument ở lời gọi).
 
 ---
 

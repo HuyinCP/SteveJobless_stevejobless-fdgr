@@ -1,14 +1,15 @@
 # ICPC Squad Finder
 
-Prototype web hỗ trợ sinh viên **Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM** tìm và ghép đội thi
-**ICPC** (mỗi đội đúng 3 người) dựa trên ràng buộc đa biến, xây dựng cho **SPD Challenge 2026**
-(Software Production and Development Challenge 2026).
+Prototype web nội bộ, dành riêng cho sinh viên **Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM**, hỗ
+trợ tìm và ghép đội thi **ICPC** (mỗi đội đúng 3 người) dựa trên ràng buộc đa biến — xây dựng cho
+**SPD Challenge 2026** (Software Production and Development Challenge 2026). Không phục vụ sinh
+viên trường khác.
 
 ## 1. Bài toán giải quyết
 
 Mùa thi ICPC vòng khu vực đang tới gần và một trong những khó khăn lớn nhất khi thành lập đội là
 tìm đủ 3 người có năng lực bù trừ nhau (tư duy toán + khả năng cài đặt) mà vẫn thỏa các ràng buộc
-hành chính (cùng trường, số lần đã tham dự Regional/World Finals). Việc ghép đội thủ công tốn thời
+hành chính (số lần đã tham dự Regional/World Finals). Việc ghép đội thủ công tốn thời
 gian, dễ bỏ lọt ứng viên phù hợp và khó giải thích tại sao một tổ hợp lại "mạnh". ICPC Squad Finder
 tự động hoá bước này: khai báo ràng buộc → hệ thống lọc và đề xuất tổ hợp đội hình hợp lệ kèm báo
 cáo giải thích, người dùng vẫn là người quyết định chọn ai.
@@ -16,10 +17,10 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
 ## 2. Tính năng chính
 
 - **Khai báo mục tiêu & ràng buộc**: số thành viên/đội, ngưỡng "mạnh" cho điểm toán/lập trình, giới
-  hạn số lần thi Regional/World Finals, bắt buộc cùng trường hoặc giới hạn vào một trường cụ thể.
-- **Khám phá kho ứng viên**: tối thiểu 20 hồ sơ mock, tìm kiếm theo tên/MSSV, lọc theo trường, xem
-  chi tiết điểm mạnh/yếu, thành tích và các chủ đề (tag Codeforces) mỗi người mạnh — một ứng viên có
-  thể mang nhiều chủ đề cùng lúc.
+  hạn số lần thi Regional/World Finals.
+- **Khám phá kho ứng viên**: tối thiểu 20 hồ sơ mock, tìm kiếm theo tên/MSSV, xem chi tiết điểm
+  mạnh/yếu, thành tích và các chủ đề (tag Codeforces) mỗi người mạnh — một ứng viên có thể mang
+  nhiều chủ đề cùng lúc.
 - **Đề xuất đội hình**: liệt kê tối đa 5 tổ hợp 3 người hợp lệ, xếp hạng theo điểm tổng hợp (điểm
   toán/lập trình trung bình + độ phủ chủ đề).
 - **Báo cáo giải thích**: với mỗi phương án, hiển thị vai trò từng thành viên (Tư duy toán / Lập
@@ -29,8 +30,8 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
   buộc ở Bước 1 khiến toàn bộ đề xuất được tính lại ngay; phương án đã chọn nếu không còn hợp lệ sẽ
   tự động bị bỏ chọn.
 - **Xử lý ngoại lệ khi vô nghiệm**: khi không có tổ hợp nào thỏa điều kiện, hệ thống chỉ rõ đang
-  thiếu năng lực/điều kiện gì theo từng trường — không tự sinh dữ liệu giả, không lặp lại thành
-  viên, không treo, không màn hình trắng.
+  thiếu năng lực/điều kiện gì — không tự sinh dữ liệu giả, không lặp lại thành viên, không treo,
+  không màn hình trắng.
 
 ## 3. Công nghệ và phụ thuộc
 

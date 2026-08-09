@@ -5,24 +5,20 @@ import { CandidateCard } from "./CandidateCard";
 interface Props {
   candidates: Candidate[];
   strongThreshold: number;
-  schools: string[];
   onToggleActive: (id: string) => void;
 }
 
-export function CandidatePool({ candidates, strongThreshold, schools, onToggleActive }: Props) {
+export function CandidatePool({ candidates, strongThreshold, onToggleActive }: Props) {
   const [query, setQuery] = useState("");
-  const [schoolFilter, setSchoolFilter] = useState("");
 
   const filtered = useMemo(() => {
-    return candidates.filter((c) => {
-      const matchesQuery =
+    return candidates.filter(
+      (c) =>
         query.trim() === "" ||
         c.fullName.toLowerCase().includes(query.toLowerCase()) ||
-        c.mssv.includes(query);
-      const matchesSchool = schoolFilter === "" || c.school === schoolFilter;
-      return matchesQuery && matchesSchool;
-    });
-  }, [candidates, query, schoolFilter]);
+        c.mssv.includes(query)
+    );
+  }, [candidates, query]);
 
   const activeCount = candidates.filter((c) => c.active).length;
 
@@ -36,18 +32,6 @@ export function CandidatePool({ candidates, strongThreshold, schools, onToggleAc
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <select
-          className="rounded border border-slate-300 px-3 py-2 text-sm"
-          value={schoolFilter}
-          onChange={(e) => setSchoolFilter(e.target.value)}
-        >
-          <option value="">Tất cả trường</option>
-          {schools.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
         <span className="text-sm text-slate-500 self-center">
           {activeCount}/{candidates.length} ứng viên đang sẵn sàng · hiển thị {filtered.length}
         </span>
