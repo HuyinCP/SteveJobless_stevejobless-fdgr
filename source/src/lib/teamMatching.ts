@@ -9,6 +9,8 @@ import type {
   TopicTag,
 } from "../types";
 import { ICPC_MAX_REGIONAL_YEARS, ICPC_MAX_WORLD_FINALS, ICPC_TEAM_SIZE } from "./icpcRules";
+import { computeAchievedPoint, computeBoundPoint, mdsbDistance } from "./mdsb";
+import type { TopicPoint } from "./mdsb";
 
 export const DEFAULT_CONSTRAINTS: FormationConstraints = {
   strongThreshold: 7,
@@ -74,23 +76,24 @@ function assignRoles(members: Candidate[], threshold: number): RoleAssignment[] 
 
 function topicCoverage(members: Candidate[]): { covered: TopicTag[]; missing: TopicTag[] } {
   const set = new Set<TopicTag>();
-  members.forEach((m) => m.topicTags.forEach((t) => set.add(t)));
+  members.forEach((m) =>
+    ALL_TOPIC_TAGS.forEach((tag) => {
+      if ((m.topicScores[tag] ?? 0) > 0) set.add(tag);
+    })
+  );
   const covered = ALL_TOPIC_TAGS.filter((t) => set.has(t));
   const missing = ALL_TOPIC_TAGS.filter((t) => !set.has(t));
   return { covered, missing };
-}
-
-function scoreTeam(members: Candidate[], covered: TopicTag[]): number {
-  const avgMath = members.reduce((s, c) => s + c.mathScore, 0) / members.length;
-  const avgCoding = members.reduce((s, c) => s + c.codingScore, 0) / members.length;
-  return Math.round((avgMath + avgCoding + covered.length * 0.3) * 100) / 100;
 }
 
 function buildExplanation(
   roles: RoleAssignment[],
   pattern: string,
   covered: TopicTag[],
-  missing: TopicTag[]
+  missing: TopicTag[],
+  distance: number,
+  boundPoint: TopicPoint,
+  achievedPoint: TopicPoint
 ): string[] {
   const lines: string[] = [];
   lines.push(`Mẫu hình đội mạnh đạt được: ${pattern}`);
@@ -102,6 +105,16 @@ function buildExplanation(
   lines.push(
     `Phủ ${covered.length}/${ALL_TOPIC_TAGS.length} chủ đề Codeforces: ${covered.join(", ") || "không có"}.` +
       (missing.length ? ` Còn thiếu: ${missing.join(", ")}.` : " Không thiếu chủ đề nào.")
+  );
+  const topDiffs = ALL_TOPIC_TAGS.map((tag) => ({ tag, diff: boundPoint[tag] - achievedPoint[tag] }))
+    .filter((d) => d.diff > 0)
+    .sort((a, b) => b.diff - a.diff)
+    .slice(0, 3);
+  lines.push(
+    `Xếp hạng theo mô hình MDSB (khoảng cách tới điểm biên lý tưởng E): distance = ${distance.toFixed(2)} — càng thấp càng tối ưu.` +
+      (topDiffs.length
+        ? ` Còn cách điểm biên nhiều nhất ở: ${topDiffs.map((d) => `${d.tag} (thiếu ${d.diff.toFixed(1)} điểm)`).join(", ")}.`
+        : " Đạt sát điểm biên ở mọi chủ đề.")
   );
   lines.push(
     `Mỗi thành viên đều thỏa giới hạn ICPC: ≤ ${ICPC_MAX_REGIONAL_YEARS} năm thi Regional và ≤ ${ICPC_MAX_WORLD_FINALS} lần thi World Finals.`
@@ -137,27 +150,39 @@ export function generateTeamSuggestions(
   const suggestions: TeamSuggestion[] = [];
 
   if (eligible.length >= ICPC_TEAM_SIZE) {
+    // Bound point E (mô hình MDSB) tính một lần trên toàn bộ pool hợp lệ — xem lib/mdsb.ts.
+    const boundPoint = computeBoundPoint(eligible, ICPC_TEAM_SIZE);
     const combos = combinations(eligible, ICPC_TEAM_SIZE);
     combos.forEach((members) => {
       const pattern = evaluatePattern(members, constraints.strongThreshold);
       if (!pattern) return;
       const roleAssignments = assignRoles(members, constraints.strongThreshold);
       const { covered, missing } = topicCoverage(members);
-      const score = scoreTeam(members, covered);
+      const achievedPoint = computeAchievedPoint(members);
+      const distance = mdsbDistance(boundPoint, achievedPoint);
       suggestions.push({
         id: members.map((m) => m.id).join("-"),
         members,
         roleAssignments,
-        score,
+        mdsbDistance: distance,
         pattern,
         coveredTopics: covered,
         missingTopics: missing,
-        explanation: buildExplanation(roleAssignments, pattern, covered, missing),
+        explanation: buildExplanation(
+          roleAssignments,
+          pattern,
+          covered,
+          missing,
+          distance,
+          boundPoint,
+          achievedPoint
+        ),
       });
     });
   }
 
-  suggestions.sort((a, b) => b.score - a.score);
+  // MDSB: khoảng cách tới bound point càng NHỎ càng tối ưu -> sắp xếp tăng dần.
+  suggestions.sort((a, b) => a.mdsbDistance - b.mdsbDistance);
 
   return {
     status: suggestions.length > 0 ? "ok" : "no-solution",

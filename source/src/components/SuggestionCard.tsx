@@ -15,9 +15,12 @@ export function SuggestionCard({ suggestion, rank, selected, onSelect }: Props) 
       }`}
     >
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">
-          Phương án #{rank} · điểm {suggestion.score}
-        </h3>
+        <div>
+          <h3 className="font-semibold text-slate-900">
+            Phương án #{rank} · khoảng cách MDSB = {suggestion.mdsbDistance.toFixed(2)}
+          </h3>
+          <p className="text-xs text-slate-400">Càng thấp càng gần điểm biên lý tưởng (tối ưu hơn).</p>
+        </div>
         <button
           onClick={() => onSelect(suggestion.id)}
           className={`text-xs px-3 py-1.5 rounded font-medium ${

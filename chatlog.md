@@ -253,6 +253,58 @@ Việt Nam: xác nhận có khối cá nhân "A (Siêu Cúp), B (Chuyên), C (Kh
 
 Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass.
 
+## Lượt 26 — User
+
+> "bạn có thể nào đọc paper này @IMMS_2018_paper_21.pdf để hiểu thêm"
+
+Đính kèm paper: Ngo Tung Son, Le Van Thanh, Tran Binh Duong, Bui Ngoc Anh, "A Decision Support Tool
+for Cross-Functional Team Selection: Case Study in ACM-ICPC Team Selection", IMMS 2018.
+
+## Lượt 27 — Claude
+
+Đọc toàn bộ paper (dùng Read tool đọc trực tiếp PDF). Tóm tắt mô hình **MDSB** (Minimize Distance to
+Bound point): với h thành viên và m tag kỹ năng (paper dùng đúng 35 tag Codeforces), tính bound
+point E (mỗi tọa độ E_j = tổng điểm h ứng viên giỏi nhất tag j trong cả pool — tính độc lập theo
+từng tag) và achieved point O của một tổ hợp cụ thể (tổng điểm từng tag của các thành viên); chọn
+tổ hợp có khoảng cách Euclid ||E-O|| nhỏ nhất — gộp đồng thời 2 mục tiêu "wide" (phủ nhiều tag) và
+"deep" (điểm cao mỗi tag) mà không cần tự chọn trọng số như weighted-sum thông thường. Paper giải
+bằng Genetic Algorithm.
+
+Chỉ ra điểm liên quan tới code hiện tại: hàm chấm điểm cũ trong `teamMatching.ts`
+(`avgMath + avgCoding + coveredTopics.length * 0.3`) là weighted-sum tự đặt trọng số — đúng loại
+hạn chế mà paper chỉ ra. Nêu rào cản: MDSB cần điểm số liên tục theo từng tag (`R_i,j`), còn dữ liệu
+hiện tại chỉ có `topicTags: string[]` (có/không). Hỏi người dùng có muốn áp dụng MDSB không.
+
+## Lượt 28 — User
+
+> "áp dụng MDSB vào đi"
+
+## Lượt 29 — Claude
+
+Áp dụng MDSB làm cơ chế xếp hạng chính (thay hoàn toàn công thức cộng điểm cũ), giữ nguyên lớp lọc
+cứng 4 điều kiện hợp lệ của đề (không đổi — MDSB chỉ xếp hạng trong số các tổ hợp đã hợp lệ):
+
+- Tạo `source/src/lib/mdsb.ts`: `computeBoundPoint(pool, teamSize)`, `computeAchievedPoint(members)`,
+  `mdsbDistance(E, O)` — trích dẫn nguồn paper ngay trong comment đầu file.
+- `types/index.ts`: đổi `Candidate.topicTags: TopicTag[]` (có/không) sang
+  `topicScores: Partial<Record<TopicTag, number>>` (điểm 1-10 mỗi tag, dùng làm `R_i,j`); đổi
+  `TeamSuggestion.score` thành `mdsbDistance` (càng thấp càng tốt, thay vì càng cao càng tốt).
+- `data/candidates.ts`: gán điểm cụ thể cho từng tag của 20 ứng viên (suy từ `mathScore`/`codingScore`
+  và tập tag đã có sẵn), thêm vài "brute force" để không có tag nào tuyệt đối vô nghĩa trong bound
+  point.
+- `lib/teamMatching.ts`: tính `boundPoint` một lần trên toàn bộ pool hợp lệ (không phải mỗi combo),
+  dùng cho mọi tổ hợp; `topicCoverage` đổi sang kiểm tra `topicScores[tag] > 0`; sắp xếp kết quả
+  tăng dần theo `mdsbDistance` (trước đó giảm dần theo `score`); `buildExplanation` thêm dòng nêu rõ
+  giá trị distance và (tối đa 3) tag còn lệch nhiều nhất so với điểm biên E.
+- `components/CandidateCard.tsx`: hiển thị điểm số kèm mỗi tag (`tag (điểm)`) thay vì chỉ tên tag.
+- `components/SuggestionCard.tsx`: đổi hiển thị "điểm {score}" thành "khoảng cách MDSB = {distance}"
+  kèm chú thích "càng thấp càng tối ưu" để tránh hiểu nhầm chiều so sánh.
+- Ghi rõ trong `CLAUDE.md`/`README.md`: lý do không dùng Genetic Algorithm như paper (quy mô nhỏ,
+  duyệt tổ hợp chính xác vẫn rẻ và đảm bảo tối ưu toàn cục, tránh sai số ngẫu nhiên của GA).
+
+Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass. Khởi động lại `npm run dev`, mở trình duyệt
+thật (`Start-Process` PowerShell) để xác nhận UI render bình thường sau khi đổi cấu trúc dữ liệu.
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai

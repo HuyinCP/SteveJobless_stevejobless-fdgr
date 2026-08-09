@@ -52,7 +52,9 @@ export interface Candidate {
   codingScore: number; // 0-10, cài đặt / lập trình thi đấu
   regionalCount: number; // số lần đã thi vòng Regional
   wfCount: number; // số lần đã thi World Finals
-  topicTags: TopicTag[]; // chủ đề mạnh theo tag Codeforces — một ứng viên có thể có nhiều tag
+  // Điểm thành thục 1-10 theo từng tag Codeforces — chỉ các tag ứng viên có kinh nghiệm mới xuất
+  // hiện (thiếu key = 0). Dùng làm R_i,j cho mô hình xếp hạng MDSB, xem lib/mdsb.ts.
+  topicScores: Partial<Record<TopicTag, number>>;
   achievements: Achievement[];
   strengths: string;
   weaknesses: string;
@@ -72,9 +74,9 @@ export interface TeamSuggestion {
   id: string;
   members: Candidate[];
   roleAssignments: RoleAssignment[];
-  score: number;
+  mdsbDistance: number; // khoảng cách Euclid tới bound point E (mô hình MDSB) — CÀNG THẤP CÀNG TỐT
   pattern: string; // mẫu hình "đội mạnh" mà đội này đạt được (rule cứng theo đề)
-  coveredTopics: TopicTag[]; // phủ tag thực tế — chỉ dùng để xếp hạng/giải thích, không quyết định hợp lệ
+  coveredTopics: TopicTag[]; // tag có điểm > 0 trong đội — chỉ dùng để giải thích, không quyết định hợp lệ
   missingTopics: TopicTag[];
   explanation: string[];
 }

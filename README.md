@@ -21,13 +21,15 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
   luật thi đấu thật) và cho phép điều chỉnh ngưỡng "mạnh" cho điểm toán/lập trình (tiêu chí riêng của
   dự án).
 - **Khám phá kho ứng viên**: tối thiểu 20 hồ sơ mock, tìm kiếm theo tên/MSSV, xem chi tiết điểm
-  mạnh/yếu, thành tích và các chủ đề (tag Codeforces) mỗi người mạnh — một ứng viên có thể mang
-  nhiều chủ đề cùng lúc.
-- **Đề xuất đội hình**: liệt kê tối đa 5 tổ hợp 3 người hợp lệ, xếp hạng theo điểm tổng hợp (điểm
-  toán/lập trình trung bình + độ phủ chủ đề).
+  mạnh/yếu, thành tích và điểm thành thục theo từng chủ đề (tag Codeforces) — một ứng viên có thể
+  mạnh nhiều chủ đề cùng lúc với mức điểm khác nhau.
+- **Đề xuất đội hình**: liệt kê tối đa 5 tổ hợp 3 người hợp lệ, xếp hạng bằng mô hình **MDSB**
+  (Minimize Distance to Bound point — tham khảo Ngo Tung Son et al., IMMS 2018): so điểm mỗi tổ hợp
+  với một "điểm biên" lý tưởng tổng hợp từ những ứng viên giỏi nhất mỗi chủ đề, tổ hợp càng gần điểm
+  biên càng được xếp hạng cao.
 - **Báo cáo giải thích**: với mỗi phương án, hiển thị vai trò từng thành viên (Tư duy toán / Lập
-  trình - cài đặt / cả hai), mẫu hình "đội mạnh" đạt được, chủ đề được phủ/còn thiếu, và lý do đội
-  hình được xem là tối ưu.
+  trình - cài đặt / cả hai), mẫu hình "đội mạnh" đạt được, chủ đề được phủ/còn thiếu, khoảng cách
+  MDSB và chủ đề còn lệch nhiều nhất so với điểm biên lý tưởng.
 - **Cập nhật động theo thời gian thực**: bật/tắt trạng thái "sẵn sàng" của ứng viên hoặc đổi ràng
   buộc ở Bước 1 khiến toàn bộ đề xuất được tính lại ngay; phương án đã chọn nếu không còn hợp lệ sẽ
   tự động bị bỏ chọn.
@@ -41,8 +43,11 @@ cáo giải thích, người dùng vẫn là người quyết định chọn ai.
 - **Tailwind CSS v4** (`@tailwindcss/vite`) — styling.
 - **Không cần backend/database**: dữ liệu ứng viên là mock JSON (`source/src/data/candidates.ts`),
   trạng thái người dùng lưu qua `localStorage` của trình duyệt.
-- Taxonomy chủ đề (`topicTags`) lấy theo tag chính thức của Codeforces (implementation, math,
+- Taxonomy chủ đề (`topicScores`) lấy theo tag chính thức của Codeforces (implementation, math,
   greedy, dp, data structures, graphs, geometry, games, ...).
+- Thuật toán xếp hạng đội hình theo mô hình **MDSB** — Ngo Tung Son, Le Van Thanh, Tran Binh Duong,
+  Bui Ngoc Anh, "A Decision Support Tool for Cross-Functional Team Selection: Case Study in
+  ACM-ICPC Team Selection", IMMS 2018.
 - Xem đầy đủ dependency tại `source/package.json`.
 
 ## 4. Hướng dẫn cài đặt và chạy
@@ -83,7 +88,8 @@ SteveJobless_stevejobless-fdgr/
         ├── index.css
         ├── types/index.ts        <- model dữ liệu (Candidate, FormationConstraints, ...)
         ├── data/candidates.ts    <- 20 hồ sơ ứng viên mock
-        ├── lib/teamMatching.ts   <- thuật toán ghép đội + chẩn đoán vô nghiệm
+        ├── lib/teamMatching.ts   <- lọc hợp lệ (4 điều kiện) + chẩn đoán vô nghiệm
+        ├── lib/mdsb.ts           <- mô hình xếp hạng MDSB (bound point, distance)
         ├── lib/icpcRules.ts      <- hằng số luật ICPC cố định (team size, giới hạn Regional/WF)
         ├── hooks/useLocalStorage.ts
         └── components/           <- ConstraintsForm, CandidatePool, CandidateCard,

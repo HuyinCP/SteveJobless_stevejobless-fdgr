@@ -90,8 +90,17 @@ chỉnh trong UI** — khác với `strongThreshold` (ngưỡng "mạnh") là ti
 - **Stack**: Vite + React + TypeScript, TailwindCSS cho styling. Không cần backend/database —
   dữ liệu mock ở dạng JSON, state lưu qua `localStorage` để việc "thay đổi động" trong core-flow demo
   giữ được sau reload.
-- **Thuật toán ghép đội**: constraint-filter + scoring (không cần thuật toán phức tạp — đề bài không
-  bắt buộc thuật toán cụ thể). Ưu tiên tính đúng & giải thích được hơn là tối ưu toàn cục.
+- **Thuật toán ghép đội**: 2 tầng, tách rõ "hợp lệ" khỏi "xếp hạng":
+  1. Lọc cứng theo 4 điều kiện của đề (không lặp người, đúng 3 người, phủ mẫu hình toán/lập trình,
+     giới hạn ICPC) — xem `evaluatePattern` trong `lib/teamMatching.ts`.
+  2. Xếp hạng các tổ hợp hợp lệ bằng mô hình **MDSB** (Minimize Distance to Bound point) —
+     xem `lib/mdsb.ts`, dựa theo Ngo Tung Son et al., "A Decision Support Tool for Cross-Functional
+     Team Selection: Case Study in ACM-ICPC Team Selection", IMMS 2018. Tính bound point E (điểm lý
+     tưởng theo từng tag Codeforces, lấy từ top-3 ứng viên giỏi nhất mỗi tag trong cả pool), so với
+     điểm đạt được O của từng tổ hợp, chọn tổ hợp có khoảng cách Euclid ||E-O|| nhỏ nhất — gộp đồng
+     thời 2 mục tiêu "wide" (phủ nhiều tag) và "deep" (điểm cao) mà không cần tự chọn trọng số.
+  3. Khác với paper (dùng Genetic Algorithm), ở đây duyệt tổ hợp chính xác (brute-force) vì quy mô
+     nhỏ (≤ vài trăm tổ hợp sau lọc) — đảm bảo tối ưu toàn cục, không cần heuristic ngẫu nhiên.
 - **Không** thêm state management library (Redux/Zustand) — quy mô nhỏ, `useState`/`useReducer` +
   Context đủ dùng, tránh phụ thuộc thừa.
 - Không viết test framework riêng trừ khi có thời gian dư — ưu tiên hoàn thành đủ 6 bước core flow của
