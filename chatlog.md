@@ -360,6 +360,53 @@ nhọn hiện có, cộng thêm điểm nền cho các tag phổ thông theo cô
 Ghi công thức này thành comment ngay đầu `data/candidates.ts` để minh bạch. Chạy lại
 `npx tsc -b --noEmit` và `npm run build` — pass.
 
+## Lượt 34 — User
+
+> "hiện tại tôi muốn dev thêm chức năng đăng nhập theo từng user hiện tại, tức là dựa vào data mock
+> hiện tại chúng ta sẽ tạo tài khoản riêng cho từng user đó, bây giờ là liên quan tới database rồi
+> tôi đang có docker, bạn có thể nào tạo 1 kho database cần thiết trên docker"
+
+## Lượt 35 — Claude
+
+Kiểm tra Docker (`docker --version`, `docker compose version`, `docker ps`) — sẵn sàng. Vì đây là
+thay đổi kiến trúc lớn (từ SPA client-only sang có backend + database), hỏi 2 câu để chốt phạm vi
+trước khi code: (1) đăng nhập thật (email+password) hay chỉ chọn hồ sơ; (2) sau đăng nhập user được
+sửa hồ sơ hay chỉ xem. User chọn: chọn hồ sơ (không password), chỉ xem không sửa.
+
+Quyết định thiết kế (nêu rõ với user trước khi làm): **tách rủi ro** — luồng ghép đội chính (đã chạy
+ổn, là phần bắt buộc chấm điểm) giữ nguyên hoàn toàn dùng mock JSON + `localStorage`; tính năng đăng
+nhập mới là một tab riêng, độc lập, có database riêng.
+
+## Lượt 36 — Claude (tiếp, cùng lượt xử lý)
+
+Triển khai:
+- Dùng `typescript` package có sẵn trong `source/node_modules` (qua TS compiler API) để trích xuất
+  chính xác 20 ứng viên từ `data/candidates.ts` sang SQL — tránh gõ tay sai sót cấu trúc JSONB lồng
+  nhau. Script lưu lại tại `source/backend/scripts/gen-seed.cjs` để tái tạo khi `candidates.ts` đổi.
+- `docker-compose.yml` (repo root): 1 service Postgres 16, seed tự động qua
+  `source/backend/db/init.sql` (mount vào `/docker-entrypoint-initdb.d/`). Thông tin kết nối đọc từ
+  `.env` (không commit) với `.env.example` làm mẫu — không hardcode credential trong file đã commit.
+- `source/backend`: Express + `pg`, REST API (`GET /api/candidates`, `GET /api/candidates/:id`,
+  `PATCH /api/candidates/:id/active`, `GET /health`), CORS mở cho origin frontend.
+- Khởi động container (`docker compose up -d db`), đợi Postgres sẵn sàng, xác nhận qua `psql`:
+  20 dòng, tiếng Việt hiển thị đúng. Cài dependency backend, chạy `npm run start`, `curl` xác nhận
+  `/health` và `/api/candidates` trả đúng cấu trúc khớp type `Candidate` ở frontend.
+- Frontend: `lib/api.ts` (gọi API qua `VITE_API_URL`), `vite-env.d.ts` (khai báo type cho biến môi
+  trường Vite tuỳ chỉnh), `components/StudentPortal.tsx` (đăng nhập bằng chọn tên trong danh sách
+  lấy từ API, lưu `id` đã chọn vào `localStorage`, hiển thị hồ sơ read-only; nếu API lỗi thì hiện
+  thông báo lỗi kết nối rõ ràng, không crash). `App.tsx` thêm tab "Ghép đội (Điều phối)" /
+  "Cổng sinh viên (Đăng nhập)" — không đổi nguồn dữ liệu hay logic của luồng ghép đội hiện có.
+- Dọn các tiến trình `vite dev` cũ còn tồn đọng từ nhiều lượt trước (dùng PowerShell
+  `Get-CimInstance Win32_Process` liệt kê rồi `Stop-Process`), khởi động lại 1 frontend dev server
+  sạch trên `5173` để test.
+- Cập nhật `submission.json` (`dependency_files` thêm `source/backend/package.json`, `run_command`
+  mô tả đủ 2 bước docker + backend + frontend), `README.md` (mục 2/3/4/5: tính năng, công nghệ,
+  hướng dẫn chạy 2 phần tách biệt, cấu trúc thư mục mới), `CLAUDE.md` (mục 4: ghi rõ quyết định tách
+  rủi ro, cách re-seed khi đổi `candidates.ts`).
+- Chạy lại `npx tsc -b --noEmit`, `npm run build`, `docker compose config` (validate cú pháp) — tất
+  cả pass. Kiểm tra `git add -n -A` để xác nhận không có `.env` thật hay `node_modules` nào bị lọt
+  vào staging, chỉ các `.env.example` và mã nguồn thật được thêm mới.
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai

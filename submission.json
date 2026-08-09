@@ -3,6 +3,6 @@
   "team_name": "SteveJobless",
   "login": "stevejobless-fdgr",
   "source_paths": ["source"],
-  "dependency_files": ["source/package.json"],
-  "run_command": "cd source && npm install && npm run dev"
+  "dependency_files": ["source/package.json", "source/backend/package.json"],
+  "run_command": "docker compose up -d db; cd source/backend && npm install && npm run dev & cd source && npm install && npm run dev"
 }

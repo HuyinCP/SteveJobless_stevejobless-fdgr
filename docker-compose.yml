@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: spd-icpc-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-icpc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-icpc_local_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-icpc_squad_finder}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - spd_icpc_pgdata:/var/lib/postgresql/data
+      - ./source/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  spd_icpc_pgdata:

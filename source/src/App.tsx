@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ConstraintsForm } from "./components/ConstraintsForm";
 import { CandidatePool } from "./components/CandidatePool";
+import { StudentPortal } from "./components/StudentPortal";
 import { SuggestionResults } from "./components/SuggestionResults";
 import { INITIAL_CANDIDATES } from "./data/candidates";
 import { useLocalStorage } from "./hooks/useLocalStorage";
@@ -34,6 +35,7 @@ function App() {
   );
   const [hasGenerated, setHasGenerated] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [view, setView] = useState<"match" | "portal">("match");
 
   const result = useMemo(
     () => generateTeamSuggestions(candidates, constraints),
@@ -69,9 +71,35 @@ function App() {
             nhiên, ĐHQG-HCM chuẩn bị vòng khu vực — dựa trên ràng buộc năng lực toán/lập trình và số
             lần đã thi Regional/World Finals.
           </p>
+
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => setView("match")}
+              className={`text-sm px-3 py-1.5 rounded font-medium ${
+                view === "match" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700"
+              }`}
+            >
+              Ghép đội (Điều phối)
+            </button>
+            <button
+              onClick={() => setView("portal")}
+              className={`text-sm px-3 py-1.5 rounded font-medium ${
+                view === "portal" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700"
+              }`}
+            >
+              Cổng sinh viên (Đăng nhập)
+            </button>
+          </div>
         </div>
       </header>
 
+      {view === "portal" && (
+        <main className="max-w-5xl mx-auto px-4 py-6">
+          <StudentPortal />
+        </main>
+      )}
+
+      {view === "match" && (
       <main className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-8">
         <section>
           <StepHeader
@@ -187,6 +215,7 @@ function App() {
           </button>
         </footer>
       </main>
+      )}
     </div>
   );
 }

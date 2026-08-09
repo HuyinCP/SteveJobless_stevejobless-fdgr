@@ -105,6 +105,19 @@ chỉnh trong UI** — khác với `strongThreshold` (ngưỡng "mạnh") là ti
   Context đủ dùng, tránh phụ thuộc thừa.
 - Không viết test framework riêng trừ khi có thời gian dư — ưu tiên hoàn thành đủ 6 bước core flow của
   đề trước.
+- **Cổng sinh viên (login theo user, PostgreSQL trên Docker)**: tính năng bổ sung theo yêu cầu người
+  dùng, KHÔNG phải một phần bắt buộc của đề. Quyết định kiến trúc quan trọng: cố ý **tách rủi ro** —
+  luồng ghép đội chính (đã chấm điểm, đang chạy ổn) tiếp tục dùng mock JSON + `localStorage` như cũ,
+  KHÔNG đổi sang đọc từ database. Cổng sinh viên là một tab riêng (`StudentPortal.tsx`), có API
+  backend riêng (`source/backend`, Express + `pg`), DB riêng (Postgres qua `docker-compose.yml`).
+  Nếu backend/DB không chạy, chỉ tab Cổng sinh viên báo lỗi kết nối — tab Ghép đội vẫn hoạt động
+  bình thường, không ảnh hưởng phần bắt buộc chấm điểm.
+- Đăng nhập ở Cổng sinh viên là **chọn hồ sơ, không có mật khẩu** (theo yêu cầu người dùng) — không
+  phải auth thật. Sau đăng nhập chỉ xem hồ sơ của chính mình, không sửa (read-only).
+- `source/backend/db/init.sql` **auto-generated** từ `source/src/data/candidates.ts` bằng
+  `source/backend/scripts/gen-seed.cjs` — `candidates.ts` là nguồn dữ liệu duy nhất. Nếu sửa
+  `candidates.ts`, phải chạy lại script này rồi `docker compose down -v && docker compose up -d db`
+  để re-seed (init.sql chỉ chạy khi tạo volume mới).
 
 ## 5. Quy ước code
 
