@@ -305,6 +305,31 @@ cứng 4 điều kiện hợp lệ của đề (không đổi — MDSB chỉ x�
 Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass. Khởi động lại `npm run dev`, mở trình duyệt
 thật (`Start-Process` PowerShell) để xác nhận UI render bình thường sau khi đổi cấu trúc dữ liệu.
 
+## Lượt 30 — User
+
+> "Uncaught TypeError: Cannot read properties of undefined (reading 'implementation') at topicScore
+> (mdsb.ts:22:20) ... tôi chạy không được vào web thì trắng tinh"
+
+Dán nguyên stack trace lỗi từ Console của trình duyệt.
+
+## Lượt 31 — Claude
+
+Chẩn đoán: trình duyệt của người dùng đã lưu `localStorage` từ trước khi đổi `Candidate.topicTags`
+sang `topicScores` (ở Lượt 29). `useLocalStorage` đọc dữ liệu cũ (không có field `topicScores`) thay
+vì dùng `INITIAL_CANDIDATES` mới, khiến `candidate.topicScores` là `undefined` → crash toàn trang
+ngay khi tải — đúng loại lỗi mục 3.4 của đề cấm tuyệt đối ("không hiển thị màn hình trắng").
+
+Sửa gốc rễ (không chỉ vá tạm):
+- `App.tsx`: bump key `localStorage` từ `spd-icpc-candidates`/`spd-icpc-constraints` sang hậu tố
+  `-v3`, để tự động bỏ qua dữ liệu cũ không tương thích và dùng lại mock data mới — không cần người
+  dùng tự xoá localStorage bằng tay.
+- Thêm optional chaining (`?.`) khi đọc `topicScores` ở `lib/mdsb.ts` (`topicScore`),
+  `lib/teamMatching.ts` (`topicCoverage`), `components/CandidateCard.tsx` — phòng vệ nếu schema
+  tiếp tục đổi trong tương lai mà quên bump version, app vẫn không crash trắng màn hình.
+
+Chạy lại `npx tsc -b --noEmit` và `npm run build` — pass. Hướng dẫn người dùng hard-refresh
+(`Ctrl+Shift+R`) trang đang mở để chắc chắn không còn cache cũ.
+
 ---
 
 > **Lưu ý cho người nộp bài**: nếu công cụ AI đang dùng hỗ trợ export session link công khai
