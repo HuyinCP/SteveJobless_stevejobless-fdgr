@@ -59,7 +59,7 @@ export function CandidateCard({ candidate, strongThreshold, onToggleActive }: Pr
       </div>
 
       <div className="flex flex-wrap gap-1">
-        {Object.entries(candidate.topicScores).map(([tag, value]) => (
+        {Object.entries(candidate.topicScores ?? {}).map(([tag, value]) => (
           <span key={tag} className="text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
             {tag} ({value})
           </span>

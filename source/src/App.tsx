@@ -22,12 +22,14 @@ function StepHeader({ step, title, hint }: { step: number; title: string; hint: 
 }
 
 function App() {
+  // v3: bump khi đổi cấu trúc Candidate/FormationConstraints để tránh đọc dữ liệu cũ không tương
+  // thích từ localStorage (gây crash trắng màn hình — điều đề bài cấm tuyệt đối).
   const [candidates, setCandidates] = useLocalStorage<Candidate[]>(
-    "spd-icpc-candidates",
+    "spd-icpc-candidates-v3",
     INITIAL_CANDIDATES
   );
   const [constraints, setConstraints] = useLocalStorage<FormationConstraints>(
-    "spd-icpc-constraints",
+    "spd-icpc-constraints-v3",
     DEFAULT_CONSTRAINTS
   );
   const [hasGenerated, setHasGenerated] = useState(false);

@@ -78,7 +78,7 @@ function topicCoverage(members: Candidate[]): { covered: TopicTag[]; missing: To
   const set = new Set<TopicTag>();
   members.forEach((m) =>
     ALL_TOPIC_TAGS.forEach((tag) => {
-      if ((m.topicScores[tag] ?? 0) > 0) set.add(tag);
+      if ((m.topicScores?.[tag] ?? 0) > 0) set.add(tag);
     })
   );
   const covered = ALL_TOPIC_TAGS.filter((t) => set.has(t));

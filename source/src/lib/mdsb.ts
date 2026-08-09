@@ -19,7 +19,7 @@ import type { Candidate, TopicTag } from "../types";
 export type TopicPoint = Record<TopicTag, number>;
 
 function topicScore(candidate: Candidate, tag: TopicTag): number {
-  return candidate.topicScores[tag] ?? 0;
+  return candidate.topicScores?.[tag] ?? 0;
 }
 
 /** E_j = tổng điểm của `teamSize` ứng viên giỏi nhất tag j, tính trên toàn bộ pool ứng viên hợp lệ. */
